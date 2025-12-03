@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Hero from "@/components/home/Hero";
 import CommunityStats from "@/components/home/CommunityStats";
@@ -8,7 +8,7 @@ import FeaturedPlayers from "@/components/home/FeaturedPlayers";
 import LatestEvents from "@/components/home/LatestEvents";
 import JoinCTA from "@/components/home/JoinCTA";
 
-export default function Home() {
+function TokenHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -30,10 +30,17 @@ export default function Home() {
       // Remove error from URL
       window.history.replaceState({}, "", "/");
     }
-  }, [searchParams]);
+  }, [searchParams, router]);
 
+  return null;
+}
+
+export default function Home() {
   return (
     <div className="min-h-screen">
+      <Suspense fallback={null}>
+        <TokenHandler />
+      </Suspense>
       <Hero />
       <CommunityStats />
       <FeaturedPlayers />
