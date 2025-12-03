@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Hero from "@/components/home/Hero";
 import CommunityStats from "@/components/home/CommunityStats";
@@ -8,7 +8,7 @@ import FeaturedPlayers from "@/components/home/FeaturedPlayers";
 import LatestEvents from "@/components/home/LatestEvents";
 import JoinCTA from "@/components/home/JoinCTA";
 
-export default function Home() {
+function AuthHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -32,8 +32,15 @@ export default function Home() {
     }
   }, [searchParams]);
 
+  return null;
+}
+
+export default function Home() {
   return (
     <div className="min-h-screen">
+      <Suspense fallback={null}>
+        <AuthHandler />
+      </Suspense>
       <Hero />
       <CommunityStats />
       <FeaturedPlayers />
