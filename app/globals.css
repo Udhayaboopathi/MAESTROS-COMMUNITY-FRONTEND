@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gold-light: #ffd363;
+    --gold-medium: #e6b325;
+    --gold-dark: #a67c00;
+    --silver: #c8c8c8;
+    --steel: #2c2c2c;
+    --black-pure: #000000;
+    --black-deep: #0a0a0a;
+    --black-charcoal: #111111;
+  }
+
+  * {
+    @apply border-steel;
+  }
+
+  body {
+    @apply bg-black-deep text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Button Styles */
+  .btn-gold {
+    @apply bg-gradient-gold text-black font-semibold px-6 py-3 rounded-lg 
+           transition-all duration-300 hover:shadow-gold-glow hover:scale-105
+           active:scale-95;
+  }
+
+  .btn-outline-gold {
+    @apply border-2 border-gold text-gold font-semibold px-6 py-3 rounded-lg
+           transition-all duration-300 hover:bg-gold hover:text-black
+           hover:shadow-gold-glow active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply text-gold font-semibold px-6 py-3 rounded-lg
+           transition-all duration-300 hover:bg-gold/10
+           active:scale-95;
+  }
+
+  /* Card Styles */
+  .card {
+    @apply bg-black-charcoal border border-steel rounded-lg p-6
+           backdrop-blur-sm relative overflow-hidden;
+  }
+
+  .card-gold {
+    @apply card border-gold/30 shadow-inner-gold;
+  }
+
+  .card-hover {
+    @apply card transition-all duration-300
+           hover:border-gold/50 hover:shadow-gold-glow hover:scale-[1.02];
+  }
+
+  /* Input Styles */
+  .input {
+    @apply bg-black-charcoal border border-steel rounded-lg px-4 py-3
+           text-white placeholder-gray-500 
+           focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold
+           transition-all duration-200;
+  }
+
+  /* Metallic Sheen Effect */
+  .metallic {
+    @apply relative;
+  }
+
+  .metallic::before {
+    content: "";
+    @apply absolute inset-0 bg-metallic-sheen opacity-0 
+           transition-opacity duration-300 pointer-events-none;
+  }
+
+  .metallic:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Gold Glow Text */
+  .text-gold-glow {
+    @apply text-gold;
+    text-shadow: 0 0 10px rgba(255, 211, 99, 0.5);
+  }
+
+  /* Scrollbar Styles */
+  .scrollbar-gold::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  .scrollbar-gold::-webkit-scrollbar-track {
+    @apply bg-black-charcoal;
+  }
+
+  .scrollbar-gold::-webkit-scrollbar-thumb {
+    @apply bg-gold rounded-full;
+  }
+
+  .scrollbar-gold::-webkit-scrollbar-thumb:hover {
+    @apply bg-gold-light;
+  }
+
+  /* Loading Spinner */
+  .spinner {
+    @apply border-4 border-steel border-t-gold rounded-full w-8 h-8 animate-spin;
+  }
+
+  /* Badge Styles */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-gold {
+    @apply badge bg-gold/20 text-gold border border-gold/30;
+  }
+
+  .badge-silver {
+    @apply badge bg-silver/20 text-silver border border-silver/30;
+  }
+
+  /* Gradient Background */
+  .bg-hero {
+    @apply bg-gradient-to-br from-black-deep via-black-charcoal to-black-deep;
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+}
+
+@layer utilities {
+  .text-shadow-gold {
+    text-shadow: 0 0 20px rgba(255, 211, 99, 0.5);
+  }
+
+  .text-shadow-gold-lg {
+    text-shadow: 0 0 30px rgba(255, 211, 99, 0.7);
+  }
+
+  .glass-effect {
+    @apply bg-black-charcoal/50 backdrop-blur-md border border-white/10;
+  }
+
+  .gold-divider {
+    @apply h-px bg-gradient-to-r from-transparent via-gold to-transparent;
+  }
+}
