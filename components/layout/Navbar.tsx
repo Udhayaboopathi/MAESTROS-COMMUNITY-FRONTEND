@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Home,
   Info,
@@ -16,8 +16,11 @@ import {
   LogIn,
   LogOut,
   User,
+  Crown,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
+import { useDiscordStats } from "@/lib/hooks/useDiscordStats";
+import UserDetailsModal from "@/components/modals/UserDetailsModal";
 
 const navItems = [
   { name: "Home", href: "/", icon: Home },
@@ -31,8 +34,17 @@ const navItems = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, login, logout, isLoading } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { stats, loading: statsLoading } = useDiscordStats();
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+
+  const handleUserClick = (clickedUser: any) => {
+    setSelectedUser(clickedUser);
+    setIsUserModalOpen(true);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black-charcoal/95 backdrop-blur-sm border-b border-steel">
@@ -73,13 +85,15 @@ export default function Navbar() {
               <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
             ) : user ? (
               <div className="flex items-center gap-3">
-                <Link
-                  href="/dashboard"
+                <button
+                  onClick={() => router.push("/dashboard")}
                   className="flex items-center gap-2 px-4 py-2 text-gold hover:bg-gold/10 rounded-lg transition-all"
                 >
                   <User className="w-4 h-4" />
-                  <span className="text-sm">{user.username}</span>
-                </Link>
+                  <span className="text-sm">
+                    {user.display_name || user.username}
+                  </span>
+                </button>
                 <button
                   onClick={logout}
                   className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
@@ -115,7 +129,131 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-steel bg-black-charcoal">
+        <div className="md:hidden border-t border-steel bg-black-charcoal max-h-[calc(100vh-4rem)] overflow-y-auto">
+          {/* Discord Stats Section */}
+          <div className="px-4 py-4 border-b border-steel">
+            <div className="flex justify-center mb-4">
+              <img
+                src="/logo.png"
+                alt="Maestros Logo"
+                className="w-24 h-24 object-contain"
+              />
+            </div>
+            <h3 className="text-xs uppercase tracking-wider text-gray-400 mb-3">
+              Discord Live
+            </h3>
+            {statsLoading ? (
+              <div className="space-y-2">
+                <div className="h-4 bg-steel rounded animate-pulse" />
+                <div className="h-4 bg-steel rounded animate-pulse w-3/4" />
+              </div>
+            ) : (
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Total Members</span>
+                  <span className="text-gold font-semibold">
+                    {stats?.total || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Online</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-green-400 font-semibold">
+                      {stats?.online || 0}
+                    </span>
+                  </div>
+                </div>
+
+                {/* CEO Online */}
+                {stats?.ceo_online && stats.ceo_online.length > 0 && (
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Crown className="w-3 h-3 text-gold" />
+                      <span className="text-xs text-gray-400">
+                        CEO Online ({stats.ceo_online.length})
+                      </span>
+                    </div>
+                    <div className="space-y-1">
+                      {stats.ceo_online.map((ceo: any, idx: number) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleUserClick(ceo)}
+                          className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                        >
+                          <div className="text-gold font-semibold">
+                            {typeof ceo === "string" ? ceo : ceo.display_name}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Manager Online */}
+                {stats?.manager_online && stats.manager_online.length > 0 && (
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Crown className="w-3 h-3 text-gold" />
+                      <span className="text-xs text-gray-400">
+                        Manager Online ({stats.manager_online.length})
+                      </span>
+                    </div>
+                    <div className="space-y-1">
+                      {stats.manager_online.map((manager: any, idx: number) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleUserClick(manager)}
+                          className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                        >
+                          <div className="text-gold font-semibold">
+                            {typeof manager === "string"
+                              ? manager
+                              : manager.display_name}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Community Members Online */}
+                {stats?.community_member_online &&
+                  stats.community_member_online.length > 0 && (
+                    <div className="mt-3">
+                      <span className="text-xs text-gray-400">
+                        Community Members Online (
+                        {stats.community_member_online.length})
+                      </span>
+                      <div className="space-y-1 mt-2">
+                        {stats.community_member_online
+                          .slice(0, 5)
+                          .map((member: any, idx: number) => (
+                            <button
+                              key={idx}
+                              onClick={() => handleUserClick(member)}
+                              className="text-xs pl-2 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                            >
+                              <div className="text-gray-300 font-medium">
+                                {typeof member === "string"
+                                  ? member
+                                  : member.display_name}
+                              </div>
+                            </button>
+                          ))}
+                        {stats.community_member_online.length > 5 && (
+                          <div className="text-xs text-gray-500 pl-2">
+                            +{stats.community_member_online.length - 5} more
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+              </div>
+            )}
+          </div>
+
+          {/* Navigation Links */}
           <div className="px-4 py-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -145,14 +283,16 @@ export default function Navbar() {
                 </div>
               ) : user ? (
                 <>
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 text-gold hover:bg-gold/10 rounded-lg transition-all"
+                  <button
+                    onClick={() => {
+                      router.push("/dashboard");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-gold hover:bg-gold/10 rounded-lg transition-all"
                   >
                     <User className="w-5 h-5" />
-                    <span>{user.username}</span>
-                  </Link>
+                    <span>{user.display_name || user.username}</span>
+                  </button>
                   <button
                     onClick={() => {
                       logout();
@@ -180,6 +320,12 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      <UserDetailsModal
+        isOpen={isUserModalOpen}
+        onClose={() => setIsUserModalOpen(false)}
+        user={selectedUser}
+      />
     </nav>
   );
 }

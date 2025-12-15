@@ -1,13 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { Crown } from "lucide-react";
 import { useDiscordStats } from "@/lib/hooks/useDiscordStats";
+import UserDetailsModal from "@/components/modals/UserDetailsModal";
 
 export default function Sidebar() {
   const { stats, loading: statsLoading } = useDiscordStats();
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleUserClick = (user: any) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
 
   return (
-    <aside className="hidden lg:block fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-black-charcoal border-r border-steel overflow-y-auto scrollbar-gold">
+    <aside
+      className="hidden lg:block fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-black-charcoal border-r border-steel overflow-y-auto scrollbar-gold"
+      style={{ zIndex: 1000000 }}
+    >
       <div className="p-4">
         {/* Logo */}
         <div className="mb-6 flex justify-center">
@@ -56,10 +68,16 @@ export default function Sidebar() {
                     </span>
                   </div>
                   <div className="max-h-20 overflow-y-auto scrollbar-gold space-y-1">
-                    {stats.ceo_online.map((ceo: string, idx: number) => (
-                      <div key={idx} className="text-xs text-gold pl-5">
-                        {ceo}
-                      </div>
+                    {stats.ceo_online.map((ceo: any, idx: number) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleUserClick(ceo)}
+                        className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                      >
+                        <div className="text-gold font-semibold">
+                          {typeof ceo === "string" ? ceo : ceo.display_name}
+                        </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -75,13 +93,19 @@ export default function Sidebar() {
                     </span>
                   </div>
                   <div className="max-h-20 overflow-y-auto scrollbar-gold space-y-1">
-                    {stats.manager_online.map(
-                      (manager: string, idx: number) => (
-                        <div key={idx} className="text-xs text-gold pl-5">
-                          {manager}
+                    {stats.manager_online.map((manager: any, idx: number) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleUserClick(manager)}
+                        className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                      >
+                        <div className="text-gold font-semibold">
+                          {typeof manager === "string"
+                            ? manager
+                            : manager.display_name}
                         </div>
-                      )
-                    )}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
@@ -97,10 +121,18 @@ export default function Sidebar() {
                     <div className="max-h-24 overflow-y-auto scrollbar-gold space-y-1 mt-2">
                       {stats.community_member_online
                         .slice(0, 10)
-                        .map((member: string, idx: number) => (
-                          <div key={idx} className="text-xs text-gray-300 pl-2">
-                            {member}
-                          </div>
+                        .map((member: any, idx: number) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleUserClick(member)}
+                            className="text-xs pl-2 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                          >
+                            <div className="text-gray-300 font-medium">
+                              {typeof member === "string"
+                                ? member
+                                : member.display_name}
+                            </div>
+                          </button>
                         ))}
                       {stats.community_member_online.length > 10 && (
                         <div className="text-xs text-gray-500 pl-2">
@@ -114,6 +146,12 @@ export default function Sidebar() {
           )}
         </div>
       </div>
+
+      <UserDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        user={selectedUser}
+      />
     </aside>
   );
 }

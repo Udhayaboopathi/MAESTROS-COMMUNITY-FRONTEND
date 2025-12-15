@@ -13,8 +13,10 @@ interface User {
   id: string;
   discord_id: string;
   username: string;
+  display_name?: string;
   discriminator: string;
   avatar: string;
+  email?: string;
   roles: string[];
   guild_roles: string[];
   xp: number;
@@ -27,6 +29,21 @@ interface User {
     is_ceo: boolean;
     is_manager: boolean;
     can_manage_applications: boolean;
+  };
+  discord_details?: {
+    global_name?: string;
+    avatar_hash?: string;
+    banner?: string;
+    banner_color?: string;
+    accent_color?: number;
+    bot?: boolean;
+    public_flags?: number;
+    server_nickname?: string;
+    server_avatar?: string;
+    joined_at?: string;
+    premium_since?: string;
+    pending?: boolean;
+    communication_disabled_until?: string | null;
   };
 }
 

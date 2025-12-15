@@ -66,18 +66,18 @@ const achievements = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen py-20 px-4">
-      <div className="container mx-auto">
+    <div className="min-h-screen py-12 sm:py-16 md:py-20 px-4">
+      <div className="container mx-auto max-w-7xl">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
-          <h1 className="text-5xl md:text-6xl font-bold text-gold mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gold mb-4 md:mb-6">
             About Maestros
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto px-4">
             We are more than just a gaming community. We are a family of
             passionate gamers dedicated to excellence, teamwork, and competitive
             spirit.
@@ -89,11 +89,13 @@ export default function AboutPage() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-20"
+          className="mb-12 md:mb-20"
         >
           <div className="card-gold max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-gold mb-6">Our Story</h2>
-            <div className="space-y-4 text-gray-300">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gold mb-4 md:mb-6">
+              Our Story
+            </h2>
+            <div className="space-y-3 md:space-y-4 text-sm sm:text-base text-gray-300">
               <p>
                 Founded in 2020, Maestros began as a small group of friends who
                 shared a passion for competitive gaming. What started as casual
@@ -121,12 +123,12 @@ export default function AboutPage() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-20"
+          className="mb-12 md:mb-20"
         >
-          <h2 className="text-4xl font-bold text-gold text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gold text-center mb-8 md:mb-12">
             Our Values
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {values.map((value, index) => {
               const Icon = value.icon;
               return (
@@ -138,13 +140,15 @@ export default function AboutPage() {
                   transition={{ delay: index * 0.1 }}
                   className="card-hover"
                 >
-                  <div className="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-gold" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gold/10 rounded-lg flex items-center justify-center mb-3 md:mb-4">
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-gold" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                     {value.title}
                   </h3>
-                  <p className="text-gray-400">{value.description}</p>
+                  <p className="text-sm sm:text-base text-gray-400">
+                    {value.description}
+                  </p>
                 </motion.div>
               );
             })}
@@ -157,7 +161,7 @@ export default function AboutPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl font-bold text-gold text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gold text-center mb-8 md:mb-12">
             Our Journey
           </h2>
           <div className="max-w-3xl mx-auto">

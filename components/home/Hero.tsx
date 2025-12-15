@@ -57,7 +57,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-6xl md:text-8xl font-bold font-display"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold"
           >
             <span className="text-gold-glow animate-pulse-gold">
               MAESTROS COMMUNITY
@@ -69,7 +69,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 max-w-2xl mx-auto px-4"
           >
             Join the most prestigious gaming community. Compete, connect, and
             conquer with the best players worldwide.
@@ -101,25 +101,31 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
-            className="grid grid-cols-3 gap-8 max-w-2xl mx-auto pt-12"
+            className="grid grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-2xl mx-auto pt-8 md:pt-12 px-4"
           >
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-gold">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gold">
                 1000+
               </div>
-              <div className="text-sm text-gray-400 mt-1">Members</div>
+              <div className="text-xs sm:text-sm text-gray-400 mt-1">
+                Members
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-gold">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gold">
                 50+
               </div>
-              <div className="text-sm text-gray-400 mt-1">Events Monthly</div>
+              <div className="text-xs sm:text-sm text-gray-400 mt-1">
+                Events Monthly
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-gold">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gold">
                 24/7
               </div>
-              <div className="text-sm text-gray-400 mt-1">Active Servers</div>
+              <div className="text-xs sm:text-sm text-gray-400 mt-1">
+                Active Servers
+              </div>
             </div>
           </motion.div>
         </div>

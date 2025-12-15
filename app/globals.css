@@ -20,7 +20,26 @@
 
   body {
     @apply bg-black-deep text-white;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: "rlig" 1, "calt" 1, "liga" 1;
+    letter-spacing: 0.01em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  p,
+  span,
+  a,
+  button {
+    @apply font-serif;
   }
 }
 

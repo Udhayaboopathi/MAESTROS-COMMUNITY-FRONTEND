@@ -137,46 +137,48 @@ export default function ManagerPanel() {
   }
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent mb-2">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent mb-2">
             Manager Panel
           </h1>
-          <p className="text-gray-400">Review and manage member applications</p>
+          <p className="text-sm sm:text-base text-gray-400">
+            Review and manage member applications
+          </p>
         </div>
 
         {/* Stats */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            <div className="bg-black-charcoal border border-steel rounded-lg p-4">
-              <p className="text-gray-400 text-sm">Total</p>
-              <p className="text-2xl font-bold text-gold-light">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-6 md:mb-8">
+            <div className="bg-black-charcoal border border-steel rounded-lg p-3 md:p-4">
+              <p className="text-gray-400 text-xs md:text-sm">Total</p>
+              <p className="text-xl md:text-2xl font-bold text-gold-light">
                 {stats.total}
               </p>
             </div>
-            <div className="bg-black-charcoal border border-yellow-500 rounded-lg p-4">
-              <p className="text-gray-400 text-sm">Pending</p>
-              <p className="text-2xl font-bold text-yellow-500">
+            <div className="bg-black-charcoal border border-yellow-500 rounded-lg p-3 md:p-4">
+              <p className="text-gray-400 text-xs md:text-sm">Pending</p>
+              <p className="text-xl md:text-2xl font-bold text-yellow-500">
                 {stats.pending}
               </p>
             </div>
-            <div className="bg-black-charcoal border border-green-500 rounded-lg p-4">
-              <p className="text-gray-400 text-sm">Approved</p>
-              <p className="text-2xl font-bold text-green-500">
+            <div className="bg-black-charcoal border border-green-500 rounded-lg p-3 md:p-4">
+              <p className="text-gray-400 text-xs md:text-sm">Approved</p>
+              <p className="text-xl md:text-2xl font-bold text-green-500">
                 {stats.approved}
               </p>
             </div>
-            <div className="bg-black-charcoal border border-red-500 rounded-lg p-4">
-              <p className="text-gray-400 text-sm">Rejected</p>
-              <p className="text-2xl font-bold text-red-500">
+            <div className="bg-black-charcoal border border-red-500 rounded-lg p-3 md:p-4">
+              <p className="text-gray-400 text-xs md:text-sm">Rejected</p>
+              <p className="text-xl md:text-2xl font-bold text-red-500">
                 {stats.rejected}
               </p>
             </div>
-            <div className="bg-black-charcoal border border-blue-500 rounded-lg p-4">
-              <p className="text-gray-400 text-sm">This Week</p>
-              <p className="text-2xl font-bold text-blue-500">
+            <div className="bg-black-charcoal border border-blue-500 rounded-lg p-3 md:p-4 col-span-2 sm:col-span-1">
+              <p className="text-gray-400 text-xs md:text-sm">This Week</p>
+              <p className="text-xl md:text-2xl font-bold text-blue-500">
                 {stats.recent_week}
               </p>
             </div>
@@ -184,10 +186,10 @@ export default function ManagerPanel() {
         )}
 
         {/* Filters */}
-        <div className="flex space-x-4 mb-6">
+        <div className="flex flex-wrap gap-2 md:gap-4 mb-4 md:mb-6">
           <button
             onClick={() => setFilter("pending")}
-            className={`px-4 py-2 rounded ${
+            className={`px-3 md:px-4 py-2 rounded text-sm md:text-base ${
               filter === "pending"
                 ? "bg-yellow-500 text-black font-bold"
                 : "bg-black-charcoal text-gray-400 border border-steel"
@@ -197,7 +199,7 @@ export default function ManagerPanel() {
           </button>
           <button
             onClick={() => setFilter("approved")}
-            className={`px-4 py-2 rounded ${
+            className={`px-3 md:px-4 py-2 rounded text-sm md:text-base ${
               filter === "approved"
                 ? "bg-green-500 text-black font-bold"
                 : "bg-black-charcoal text-gray-400 border border-steel"
