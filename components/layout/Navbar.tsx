@@ -28,7 +28,6 @@ const navItems = [
   { name: "About", href: "/about", icon: Info },
   { name: "Apply", href: "/apply", icon: FileText },
   { name: "Games", href: "/games", icon: Gamepad2 },
-  { name: "Events", href: "/events", icon: Calendar },
   { name: "Rules", href: "/rules", icon: Shield },
   { name: "Team", href: "/team", icon: Users },
   { name: "Contact", href: "/contact", icon: Mail },

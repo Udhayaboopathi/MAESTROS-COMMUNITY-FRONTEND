@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Hero from "@/components/home/Hero";
 import CommunityStats from "@/components/home/CommunityStats";
 import FeaturedPlayers from "@/components/home/FeaturedPlayers";
-import LatestEvents from "@/components/home/LatestEvents";
 import JoinCTA from "@/components/home/JoinCTA";
 
 function AuthHandler() {
@@ -44,7 +43,6 @@ export default function Home() {
       <Hero />
       <CommunityStats />
       <FeaturedPlayers />
-      <LatestEvents />
       <JoinCTA />
     </div>
   );

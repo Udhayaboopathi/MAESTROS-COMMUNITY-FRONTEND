@@ -17,7 +17,7 @@ import {
   Check,
 } from "lucide-react";
 
-type Tab = "applications" | "games" | "events" | "rules";
+type Tab = "applications" | "games" | "rules";
 
 export default function ManagerPanel() {
   const { user, isLoading } = useAuth();
@@ -47,7 +47,6 @@ export default function ManagerPanel() {
   const tabs = [
     { id: "applications" as Tab, label: "Applications", icon: FileText },
     { id: "games" as Tab, label: "Games", icon: Gamepad2 },
-    { id: "events" as Tab, label: "Events", icon: Calendar },
     { id: "rules" as Tab, label: "Rules", icon: Shield },
   ];
 
@@ -60,7 +59,7 @@ export default function ManagerPanel() {
             Manager Panel
           </h1>
           <p className="text-sm sm:text-base text-gray-400">
-            Manage applications, games, events, and community rules
+            Manage applications, games, and community rules
           </p>
         </div>
 
@@ -89,7 +88,6 @@ export default function ManagerPanel() {
         <div className="bg-black-charcoal border border-steel rounded-lg p-6">
           {activeTab === "applications" && <ApplicationsTab />}
           {activeTab === "games" && <GamesTab />}
-          {activeTab === "events" && <EventsTab />}
           {activeTab === "rules" && <RulesTab />}
         </div>
       </div>
@@ -889,11 +887,6 @@ function ApplicationsTab() {
       )}
     </div>
   );
-}
-
-// Events Tab Component
-function EventsTab() {
-  return <div className="text-gray-400">Events Management - Coming Soon</div>;
 }
 
 // Rules Tab Component
