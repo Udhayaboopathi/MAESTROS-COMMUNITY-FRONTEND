@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
-import { CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
+import { CheckCircle, ArrowRight, ArrowLeft, FileText } from "lucide-react";
 
 const steps = [
   {
@@ -18,7 +18,19 @@ const steps = [
         type: "text",
         required: true,
       },
-      { name: "age", label: "Age", type: "number", required: true },
+      {
+        name: "date_of_birth",
+        label: "Date of Birth",
+        type: "date",
+        required: true,
+      },
+      {
+        name: "phone",
+        label: "Phone Number",
+        type: "tel",
+        required: false,
+        placeholder: "+1234567890",
+      },
       { name: "country", label: "Country", type: "text", required: true },
     ],
   },
@@ -82,6 +94,27 @@ export default function ApplyPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [eligibility, setEligibility] = useState<any>(null);
+  const [checkingEligibility, setCheckingEligibility] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      checkEligibility();
+    }
+  }, [user]);
+
+  const checkEligibility = async () => {
+    try {
+      setCheckingEligibility(true);
+      const response = await api.post("/application-manager/check-eligibility");
+      setEligibility(response.data);
+    } catch (error: any) {
+      console.error("Eligibility check failed:", error);
+      toast.error("Failed to check eligibility");
+    } finally {
+      setCheckingEligibility(false);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -126,46 +159,47 @@ export default function ApplyPage() {
 
     setLoading(true);
     try {
-      // Log what we're sending for debugging
-      console.log("Submitting application data:", formData);
+      // Use new Discord-integrated endpoint
+      const response = await api.post(
+        "/application-manager/submit-with-discord",
+        formData
+      );
 
-      // All validation and logic happens server-side
-      const response = await api.post("/applications/submit", formData);
+      const { success, assigned_manager, dm_sent, score } = response.data;
 
-      const { score, xp_awarded, level_up, new_level, ai_analysis } =
-        response.data;
+      if (success) {
+        toast.success("Application submitted successfully!");
 
-      toast.success("Application submitted successfully!");
+        if (score) {
+          toast.success(`Application Score: ${score.toFixed(1)}/100`, {
+            duration: 5000,
+          });
+        }
 
-      // Display server-calculated results
-      if (score) {
-        toast.success(
-          `Application Score: ${score.toFixed(1)}/100 | +${xp_awarded} XP`,
-          { duration: 5000 }
-        );
+        if (assigned_manager) {
+          toast.success(`Assigned to: ${assigned_manager}`, { duration: 5000 });
+        }
+
+        if (!dm_sent) {
+          toast.error(
+            "Could not send DM. Please check your Discord privacy settings.",
+            { duration: 7000 }
+          );
+        }
+
+        router.push("/dashboard");
       }
-
-      if (level_up) {
-        toast.success(`🎉 Level Up! You are now Level ${new_level}!`, {
-          duration: 6000,
-        });
-      }
-
-      router.push("/profile");
     } catch (error: any) {
       console.error("Application submission error:", error.response?.data);
       const detail = error.response?.data?.detail;
 
-      // Handle validation errors from server
-      if (detail?.errors) {
-        const errorMessages = Object.entries(detail.errors)
-          .map(([field, msg]) => `${field}: ${msg}`)
-          .join(", ");
-        toast.error(`Validation errors: ${errorMessages}`);
+      if (typeof detail === "object" && detail.reason) {
+        // Eligibility error
+        toast.error(detail.message || "Application cannot be submitted");
       } else if (typeof detail === "string") {
         toast.error(detail);
       } else {
-        toast.error("Failed to submit application. Check console for details.");
+        toast.error("Failed to submit application. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -192,6 +226,57 @@ export default function ApplyPage() {
     );
   }
 
+  if (checkingEligibility) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-gold text-center max-w-md"
+        >
+          <div className="spinner mb-4"></div>
+          <p className="text-gray-300">Checking eligibility...</p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (eligibility && !eligibility.eligible) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card-gold text-center max-w-md"
+        >
+          <h2 className="text-2xl font-bold text-gold mb-4">
+            {eligibility.reason === "ALREADY_MEMBER"
+              ? "Already a Member"
+              : eligibility.reason === "PENDING"
+              ? "Application Pending"
+              : eligibility.reason === "COOLDOWN"
+              ? "Cooldown Active"
+              : "Cannot Apply"}
+          </h2>
+          <p className="text-gray-300 mb-6">{eligibility.message}</p>
+
+          {eligibility.days_remaining && (
+            <p className="text-gray-400 mb-4">
+              Days remaining: {eligibility.days_remaining}
+            </p>
+          )}
+
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="btn-gold"
+          >
+            Go to Dashboard
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen py-20 px-4">
       <div className="container mx-auto max-w-3xl">
@@ -201,6 +286,18 @@ export default function ApplyPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full mb-6"
+          >
+            <FileText className="w-4 h-4 text-gold" />
+            <span className="text-sm text-gold font-semibold">
+              Membership Application
+            </span>
+          </motion.div>
+
           <h1 className="text-5xl font-bold text-gold mb-4">
             Apply to Maestros
           </h1>
@@ -297,7 +394,7 @@ export default function ApplyPage() {
           <div className="flex justify-between mt-8">
             <button
               onClick={handleBack}
-              disabled={currentStep === 0}
+              disabled={currentStep === 0 || loading}
               className="btn-ghost disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
@@ -306,10 +403,13 @@ export default function ApplyPage() {
             <button
               onClick={handleNext}
               disabled={loading}
-              className="btn-gold"
+              className="btn-gold flex items-center gap-2"
             >
               {loading ? (
-                <div className="spinner" />
+                <>
+                  <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                  Submitting...
+                </>
               ) : currentStep === steps.length - 1 ? (
                 "Submit Application"
               ) : (
@@ -321,6 +421,41 @@ export default function ApplyPage() {
             </button>
           </div>
         </motion.div>
+
+        {/* Loading Overlay */}
+        {loading && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+            <div className="bg-black-charcoal border-2 border-gold rounded-lg p-8 text-center max-w-md">
+              <div className="relative w-32 h-32 mx-auto mb-6">
+                <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold border-r-gold animate-spin" />
+                <div className="absolute inset-3 rounded-full border-2 border-gold/30 animate-pulse" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <FileText className="w-16 h-16 text-gold animate-pulse" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-gold mb-2">
+                Submitting Application
+              </h3>
+              <p className="text-gray-400 mb-4">
+                Processing your application and notifying managers...
+              </p>
+              <div className="flex justify-center gap-1">
+                <div
+                  className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                />
+                <div
+                  className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                  style={{ animationDelay: "150ms" }}
+                />
+                <div
+                  className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Info */}
         <motion.div

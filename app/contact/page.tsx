@@ -86,9 +86,15 @@ export default function ContactPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <div className="inline-block mb-4 px-6 py-2 bg-gold/10 border border-gold/30 rounded-full">
-            <p className="text-gold font-semibold text-sm">CONTACT US</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full mb-6"
+          >
+            <MessageSquare className="w-4 h-4 text-gold" />
+            <span className="text-sm text-gold font-semibold">Contact Us</span>
+          </motion.div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-white">
             Let's Start a{" "}
             <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">

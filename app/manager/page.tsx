@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/contexts/AuthContext";
 import { useSystemUI } from "@/lib/contexts/SystemUIContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import api from "@/lib/api";
 import {
   FileText,
@@ -16,6 +17,7 @@ import {
   X,
   Save,
   Check,
+  CheckCircle,
 } from "lucide-react";
 
 type Tab = "applications" | "games" | "rules";
@@ -532,14 +534,17 @@ function GamesTab() {
 
 // Applications Tab Component
 function ApplicationsTab() {
+  const { user } = useAuth();
   const systemUI = useSystemUI();
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedApp, setSelectedApp] = useState<any>(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [acceptNotes, setAcceptNotes] = useState("");
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     loadApplications();
@@ -558,11 +563,23 @@ function ApplicationsTab() {
     }
   };
 
-  const handleAccept = async (appId: string) => {
+  const handleAccept = async () => {
+    if (!selectedApp) return;
+
+    if (acceptNotes.trim().length < 10) {
+      systemUI.showAlert({
+        type: "error",
+        message: "Please provide acceptance notes (min 10 characters)",
+      });
+      return;
+    }
+
+    setProcessing(true);
     try {
-      await api.post(`/applications/manager/accept/${appId}`, {
+      await api.post(`/applications/manager/accept/${selectedApp._id}`, {
         notes: acceptNotes,
       });
+      setShowAcceptModal(false);
       setSelectedApp(null);
       setAcceptNotes("");
       loadApplications();
@@ -577,17 +594,23 @@ function ApplicationsTab() {
         type: "error",
         message: error.response?.data?.detail || "Failed to accept application",
       });
+    } finally {
+      setProcessing(false);
     }
   };
 
   const handleReject = async () => {
-    if (!selectedApp || rejectReason.length < 10) {
+    if (!selectedApp) return;
+
+    if (rejectReason.trim().length < 10) {
       systemUI.showAlert({
         type: "error",
-        message: "Rejection reason must be at least 10 characters",
+        message: "Please provide a rejection reason (min 10 characters)",
       });
       return;
     }
+
+    setProcessing(true);
     try {
       await api.post(`/applications/manager/reject/${selectedApp._id}`, {
         reason: rejectReason,
@@ -607,6 +630,8 @@ function ApplicationsTab() {
         type: "error",
         message: error.response?.data?.detail || "Failed to reject application",
       });
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -989,14 +1014,8 @@ function ApplicationsTab() {
                   <>
                     <button
                       onClick={() => {
-                        systemUI.showConfirm({
-                          type: "permission",
-                          title: "Accept Application",
-                          message: `Are you sure you want to accept ${
-                            app.in_game_name || app.user_info?.username
-                          }'s application?`,
-                          onConfirm: () => handleAccept(app._id),
-                        });
+                        setSelectedApp(app);
+                        setShowAcceptModal(true);
                       }}
                       className="flex items-center gap-1 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                     >
@@ -1015,6 +1034,45 @@ function ApplicationsTab() {
                     </button>
                   </>
                 )}
+                {app.status === "rejected" && user?.permissions?.is_ceo && (
+                  <button
+                    onClick={() => {
+                      systemUI.showConfirm({
+                        type: "permission",
+                        title: "Grant Early Reapply Permission",
+                        message: `Allow ${
+                          app.in_game_name || app.user_info?.username
+                        } to reapply before the 30-day cooldown? They will have 7 days to submit a new application.`,
+                        onConfirm: async () => {
+                          try {
+                            await api.post(
+                              `/application-manager/ceo/grant-reapply/${app.user_id}`
+                            );
+                            systemUI.showAlert({
+                              type: "success",
+                              title: "Permission Granted!",
+                              message:
+                                "The user can now reapply early. They will receive a DM notification.",
+                              autoDismiss: 5000,
+                            });
+                            loadApplications();
+                          } catch (error: any) {
+                            systemUI.showAlert({
+                              type: "error",
+                              message:
+                                error.response?.data?.detail ||
+                                "Failed to grant permission",
+                            });
+                          }
+                        },
+                      });
+                    }}
+                    className="flex items-center gap-1 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    <Check className="w-4 h-4" />
+                    Grant Reapply
+                  </button>
+                )}
                 <button
                   onClick={() => handleDelete(app._id)}
                   className="flex items-center gap-1 px-3 py-2 bg-red-800 text-white rounded hover:bg-red-900"
@@ -1025,6 +1083,83 @@ function ApplicationsTab() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Loading Overlay */}
+      {processing && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="bg-black-charcoal border-2 border-gold rounded-lg p-8 text-center max-w-md">
+            <div className="relative w-32 h-32 mx-auto mb-6">
+              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold border-r-gold animate-spin" />
+              <div className="absolute inset-3 rounded-full border-2 border-gold/30 animate-pulse" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <CheckCircle className="w-16 h-16 text-gold animate-pulse" />
+              </div>
+            </div>
+            <h3 className="text-2xl font-bold text-gold mb-2">
+              Processing Decision
+            </h3>
+            <p className="text-gray-400 mb-4">
+              Updating application status and notifying applicant...
+            </p>
+            <div className="flex justify-center gap-1">
+              <div
+                className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              />
+              <div
+                className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              />
+              <div
+                className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Accept Modal */}
+      {showAcceptModal && selectedApp && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-black-charcoal border border-steel rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold text-green-400 mb-4">
+              Accept Application
+            </h3>
+            <p className="text-gray-400 mb-4">
+              Why are you accepting{" "}
+              {selectedApp.in_game_name || selectedApp.user_info?.username}'s
+              application? (min 10 characters):
+            </p>
+            <textarea
+              value={acceptNotes}
+              onChange={(e) => setAcceptNotes(e.target.value)}
+              className="w-full px-4 py-2 bg-black-deep border border-steel rounded-lg text-white h-32 mb-4"
+              placeholder="e.g., Great experience, positive attitude, would be a good fit for the community..."
+            />
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => {
+                  setShowAcceptModal(false);
+                  setAcceptNotes("");
+                  setSelectedApp(null);
+                }}
+                disabled={processing}
+                className="px-4 py-2 bg-steel text-white rounded hover:bg-steel/80 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAccept}
+                disabled={processing}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Confirm Accept
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1052,13 +1187,15 @@ function ApplicationsTab() {
                   setRejectReason("");
                   setSelectedApp(null);
                 }}
-                className="px-4 py-2 bg-steel text-white rounded hover:bg-steel/80"
+                disabled={processing}
+                className="px-4 py-2 bg-steel text-white rounded hover:bg-steel/80 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 onClick={handleReject}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                disabled={processing}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Confirm Reject
               </button>

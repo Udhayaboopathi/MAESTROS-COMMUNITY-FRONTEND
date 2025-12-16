@@ -344,7 +344,6 @@ export default function SystemUI({
               <div className="absolute top-0 left-0 w-64 h-64 bg-gold rounded-full blur-3xl" />
               <div className="absolute bottom-0 right-0 w-64 h-64 bg-gold-light rounded-full blur-3xl" />
             </div>
-            <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-5" />
           </>
         )}
 
@@ -599,7 +598,9 @@ export default function SystemUI({
           variant === "guild"
             ? "bg-gradient-to-br from-black-deep via-black-charcoal to-black-deep"
             : `bg-gradient-to-br ${colors.bg}`
-        } border-2 ${colors.border} rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300`}
+        } border-2 ${
+          colors.border
+        } rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300`}
         role="dialog"
         aria-modal="true"
       >
@@ -612,9 +613,6 @@ export default function SystemUI({
             <div className="absolute bottom-0 left-0 w-24 h-24 border-l-2 border-b-2 border-gold/30 rounded-bl-2xl" />
             <div className="absolute bottom-0 right-0 w-24 h-24 border-r-2 border-b-2 border-gold/30 rounded-br-2xl" />
 
-            {/* Subtle pattern overlay */}
-            <div className="absolute inset-0 opacity-5 bg-[url('/pattern.png')]" />
-
             {/* Glow effect */}
             <div className="absolute inset-0 bg-gradient-to-b from-gold/5 via-transparent to-gold/5 pointer-events-none" />
           </>
@@ -623,7 +621,9 @@ export default function SystemUI({
         {/* Glowing top edge */}
         <div
           className={`absolute top-0 left-0 right-0 h-1 ${
-            variant === "guild" ? "bg-gradient-to-r from-transparent via-gold to-transparent" : `bg-gradient-to-r ${colors.gradient}`
+            variant === "guild"
+              ? "bg-gradient-to-r from-transparent via-gold to-transparent"
+              : `bg-gradient-to-r ${colors.gradient}`
           }`}
         />
 
@@ -643,7 +643,10 @@ export default function SystemUI({
                     />
                   </div>
                   {/* Rotating ring around logo */}
-                  <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-gold animate-spin" style={{ animationDuration: "3s" }} />
+                  <div
+                    className="absolute inset-0 rounded-full border-2 border-transparent border-t-gold animate-spin"
+                    style={{ animationDuration: "3s" }}
+                  />
                 </>
               ) : (
                 <>

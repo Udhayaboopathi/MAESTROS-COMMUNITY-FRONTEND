@@ -484,6 +484,18 @@ export default function TeamPage() {
           {/* Main Content */}
           <div className="flex-1 min-w-0">
             {/* Header */}
+            <div className="text-center">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full mb-6"
+              >
+                <Users className="w-4 h-4 text-gold" />
+                <span className="text-sm text-gold font-semibold">Our Team</span>
+              </motion.div>
+            </div>
+
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
