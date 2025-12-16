@@ -19,21 +19,8 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
-  const [rpFormData, setRpFormData] = useState({
-    serverName: "",
-    ownerName: "",
-    discordId: "",
-    serverDescription: "",
-    playerCount: "",
-    serverIP: "",
-    additionalInfo: "",
-  });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isRpSubmitting, setIsRpSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
-  const [rpSubmitStatus, setRpSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
 
@@ -51,66 +38,10 @@ export default function ContactPage() {
     }, 2000);
   };
 
-  const handleRpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsRpSubmitting(true);
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/discord/send-invite-request`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            server_name: rpFormData.serverName,
-            owner_name: rpFormData.ownerName,
-            discord_id: rpFormData.discordId,
-            server_description: rpFormData.serverDescription,
-            player_count: rpFormData.playerCount,
-            server_ip: rpFormData.serverIP,
-            additional_info: rpFormData.additionalInfo,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        setIsRpSubmitting(false);
-        setRpSubmitStatus("success");
-        setRpFormData({
-          serverName: "",
-          ownerName: "",
-          discordId: "",
-          serverDescription: "",
-          playerCount: "",
-          serverIP: "",
-          additionalInfo: "",
-        });
-        setTimeout(() => setRpSubmitStatus("idle"), 5000);
-      } else {
-        throw new Error("Failed to submit");
-      }
-    } catch (error) {
-      setIsRpSubmitting(false);
-      setRpSubmitStatus("error");
-      setTimeout(() => setRpSubmitStatus("idle"), 5000);
-    }
-  };
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleRpChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setRpFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
@@ -141,123 +72,137 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+    <div className="min-h-screen bg-black-deep relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gold-light/10 rounded-full blur-3xl animate-pulse delay-1000" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-            Get In Touch
+          <div className="inline-block mb-4 px-6 py-2 bg-gold/10 border border-gold/30 rounded-full">
+            <p className="text-gold font-semibold text-sm">CONTACT US</p>
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-white">
+            Let's Start a{" "}
+            <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+              Conversation
+            </span>
           </h1>
-          <p className="text-gray-400 text-lg sm:text-xl max-w-3xl mx-auto">
-            Have a question or want to join our community? We'd love to hear
-            from you. Send us a message and we'll respond as soon as possible.
+          <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
+            We're here to help and answer any questions you might have
           </p>
         </motion.div>
 
-        {/* Contact Methods */}
+        {/* Contact Methods - Horizontal Cards */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="grid md:grid-cols-3 gap-6 mb-16"
+          transition={{ delay: 0.1 }}
+          className="grid md:grid-cols-3 gap-4 mb-12"
         >
           {contactMethods.map((method, index) => {
             const Icon = method.icon;
             return (
-              <a
+              <motion.a
                 key={index}
                 href={method.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal rounded-2xl p-6 border border-gold/20 hover:border-gold/50 transition-all hover:transform hover:scale-105"
+                whileHover={{ y: -5 }}
+                className="group relative bg-black-charcoal/50 backdrop-blur-sm rounded-xl p-6 border border-gold/10 hover:border-gold/40 transition-all overflow-hidden"
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/20 to-gold-light/20 flex items-center justify-center border border-gold/30 group-hover:scale-110 transition-transform">
-                    <Icon className="w-6 h-6 text-gold" />
+                <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative">
+                  <div className="w-14 h-14 rounded-lg bg-gradient-gold flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Icon className="w-7 h-7 text-black-deep" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-gold font-bold text-lg mb-1">
-                      {method.title}
-                    </h3>
-                    <p className="text-white text-sm mb-1">{method.value}</p>
-                    <p className="text-gray-400 text-xs">
-                      {method.description}
-                    </p>
-                  </div>
+                  <h3 className="text-white font-bold text-lg mb-1">
+                    {method.title}
+                  </h3>
+                  <p className="text-gold-light text-sm mb-2 font-medium">
+                    {method.value}
+                  </p>
+                  <p className="text-gray-500 text-xs">{method.description}</p>
                 </div>
-              </a>
+              </motion.a>
             );
           })}
         </motion.div>
 
         {/* Contact Form */}
-        <div className="grid lg:grid-cols-2 gap-12 items-start mb-16">
-          {/* Form */}
+        <div className="grid lg:grid-cols-5 gap-8 items-start mb-12">
+          {/* Form - Takes up 3 columns */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-3"
           >
-            <div className="bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal rounded-3xl p-8 border border-gold/20">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/30 to-gold-light/30 flex items-center justify-center border border-gold/40">
-                  <Send className="w-6 h-6 text-gold" />
-                </div>
-                <h2 className="text-2xl font-bold text-gold">
-                  Send us a message
+            <div className="bg-black-charcoal/70 backdrop-blur-md rounded-2xl p-8 border border-gold/20 shadow-2xl">
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold text-white mb-2">
+                  Send a Message
                 </h2>
+                <p className="text-gray-400 text-sm">
+                  Fill out the form below and we'll get back to you shortly
+                </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Name */}
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-400 mb-2"
-                  >
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors"
-                    placeholder="John Doe"
-                  />
-                </div>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid md:grid-cols-2 gap-5">
+                  {/* Name */}
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-semibold text-gold-light mb-2"
+                    >
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                      placeholder="John Doe"
+                    />
+                  </div>
 
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-400 mb-2"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors"
-                    placeholder="john@example.com"
-                  />
+                  {/* Email */}
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-semibold text-gold-light mb-2"
+                    >
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                      placeholder="john@example.com"
+                    />
+                  </div>
                 </div>
 
                 {/* Subject */}
                 <div>
                   <label
                     htmlFor="subject"
-                    className="block text-sm font-medium text-gray-400 mb-2"
+                    className="block text-sm font-semibold text-gold-light mb-2"
                   >
                     Subject
                   </label>
@@ -268,8 +213,8 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors"
-                    placeholder="What is this about?"
+                    className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                    placeholder="What's this about?"
                   />
                 </div>
 
@@ -277,9 +222,9 @@ export default function ContactPage() {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-sm font-medium text-gray-400 mb-2"
+                    className="block text-sm font-semibold text-gold-light mb-2"
                   >
-                    Message
+                    Your Message
                   </label>
                   <textarea
                     id="message"
@@ -287,9 +232,9 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    rows={6}
-                    className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors resize-none"
-                    placeholder="Tell us what's on your mind..."
+                    rows={5}
+                    className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none"
+                    placeholder="Tell us more..."
                   />
                 </div>
 
@@ -297,7 +242,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-gold via-gold-light to-gold text-black-deep font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-gold/50 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+                  className="w-full px-6 py-4 bg-gradient-gold text-black-deep font-bold text-base rounded-lg hover:shadow-lg hover:shadow-gold/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
                 >
                   {isSubmitting ? (
                     <>
@@ -306,8 +251,8 @@ export default function ContactPage() {
                     </>
                   ) : (
                     <>
-                      <Send className="w-5 h-5" />
                       Send Message
+                      <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
@@ -315,319 +260,121 @@ export default function ContactPage() {
                 {/* Success Message */}
                 {submitStatus === "success" && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-center"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-300 text-center font-medium"
                   >
-                    Message sent successfully! We'll get back to you soon.
+                    ✓ Message sent! We'll respond within 24 hours.
                   </motion.div>
                 )}
               </form>
             </div>
           </motion.div>
 
-          {/* Info Section */}
+          {/* Info Sidebar - Takes up 2 columns */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="space-y-6"
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-2 space-y-6"
           >
-            {/* Community Info */}
-            <div className="bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal rounded-2xl p-8 border border-gold/20">
-              <div className="flex items-center gap-3 mb-6">
+            {/* Community Card */}
+            <div className="bg-gradient-to-br from-gold/10 via-black-charcoal/90 to-black-charcoal/90 backdrop-blur-sm rounded-2xl p-6 border border-gold/30">
+              <div className="flex items-center gap-3 mb-4">
                 <img
                   src="/logo.png"
-                  alt="Maestros Logo"
-                  className="w-16 h-16 object-contain"
+                  alt="Maestros"
+                  className="w-12 h-12 object-contain"
                 />
                 <div>
-                  <h3 className="text-2xl font-bold text-gold">
+                  <h3 className="text-xl font-bold text-white">
                     Maestros Community
                   </h3>
-                  <p className="text-gray-400 text-sm">Gaming Excellence</p>
+                  <p className="text-gold-light text-sm">Gaming Excellence</p>
                 </div>
               </div>
-
-              <p className="text-gray-300 mb-6 leading-relaxed">
+              <p className="text-gray-400 text-sm leading-relaxed mb-4">
                 Join our thriving gaming community where passion meets
-                excellence. Whether you're a casual player or competitive gamer,
-                there's a place for you here.
+                excellence. Connect with gamers worldwide.
               </p>
-
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-gold flex-shrink-0 mt-1" />
-                  <div>
-                    <p className="text-gray-400 text-sm">Location</p>
-                    <p className="text-white">Global Community</p>
-                  </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-sm">
+                  <MapPin className="w-4 h-4 text-gold" />
+                  <span className="text-gray-300">Global Community</span>
                 </div>
-
-                <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-gold flex-shrink-0 mt-1" />
-                  <div>
-                    <p className="text-gray-400 text-sm">Response Time</p>
-                    <p className="text-white">Within 24 hours</p>
-                  </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <Phone className="w-4 h-4 text-gold" />
+                  <span className="text-gray-300">24hr Response Time</span>
                 </div>
               </div>
             </div>
 
             {/* Quick Links */}
-            <div className="bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal rounded-2xl p-8 border border-gold/20">
-              <h3 className="text-xl font-bold text-gold mb-4">Quick Links</h3>
-              <div className="space-y-3">
-                <a
-                  href="/about"
-                  className="block text-gray-300 hover:text-gold transition-colors"
-                >
-                  → About Us
-                </a>
-                <a
-                  href="/apply"
-                  className="block text-gray-300 hover:text-gold transition-colors"
-                >
-                  → Join Our Community
-                </a>
-                <a
-                  href="/rules"
-                  className="block text-gray-300 hover:text-gold transition-colors"
-                >
-                  → Community Rules
-                </a>
-                <a
-                  href="/team"
-                  className="block text-gray-300 hover:text-gold transition-colors"
-                >
-                  → Meet Our Team
-                </a>
+            <div className="bg-black-charcoal/70 backdrop-blur-sm rounded-2xl p-6 border border-gold/10">
+              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <div className="w-1 h-5 bg-gradient-gold rounded-full" />
+                Quick Navigation
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: "About Us", href: "/about" },
+                  { label: "Join Now", href: "/apply" },
+                  { label: "Rules", href: "/rules" },
+                  { label: "Our Team", href: "/team" },
+                ].map((link, i) => (
+                  <a
+                    key={i}
+                    href={link.href}
+                    className="px-4 py-2 bg-black-deep/60 hover:bg-black-deep border border-gold/10 hover:border-gold/30 rounded-lg text-gray-300 hover:text-gold text-sm transition-all text-center"
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </div>
             </div>
 
-            {/* FAQ Hint */}
-            <div className="bg-gradient-to-br from-gold/5 via-black-deep/50 to-gold/5 rounded-2xl p-6 border border-gold/30">
-              <h4 className="text-lg font-bold text-gold mb-2">
-                💡 Before you ask...
-              </h4>
-              <p className="text-gray-300 text-sm">
-                Check out our{" "}
-                <a href="/rules" className="text-gold hover:underline">
-                  Rules page
-                </a>{" "}
-                for common questions about membership, events, and community
-                guidelines.
-              </p>
+            {/* Info Box */}
+            <div className="bg-gradient-to-br from-gold/5 to-transparent rounded-2xl p-5 border border-gold/20">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+                  <span className="text-gold text-lg">💡</span>
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-sm mb-1">
+                    Pro Tip
+                  </h4>
+                  <p className="text-gray-400 text-xs leading-relaxed">
+                    Check our{" "}
+                    <a href="/rules" className="text-gold hover:underline">
+                      Rules
+                    </a>{" "}
+                    page for FAQs before reaching out
+                  </p>
+                </div>
+              </div>
             </div>
+
+            {/* RP Server Partnership Link */}
+            <a
+              href="/rp-invite"
+              className="block bg-gradient-to-r from-gold/10 via-gold-light/5 to-transparent rounded-2xl p-6 border border-gold/30 hover:border-gold/50 transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-gold flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Gamepad2 className="w-6 h-6 text-black-deep" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-white font-bold text-base mb-1 group-hover:text-gold transition-colors">
+                    RP Server Partnership
+                  </h4>
+                  <p className="text-gray-400 text-xs">
+                    Get your server featured in our community →
+                  </p>
+                </div>
+              </div>
+            </a>
           </motion.div>
         </div>
-
-        {/* RP Server Invite Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="max-w-4xl mx-auto"
-        >
-          <div className="bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal rounded-3xl p-8 border border-gold/20">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/30 to-gold-light/30 flex items-center justify-center border border-gold/40">
-                <Gamepad2 className="w-6 h-6 text-gold" />
-              </div>
-              <h2 className="text-2xl font-bold text-gold">
-                Request RP Server Invite
-              </h2>
-            </div>
-            <p className="text-gray-400 text-sm mb-6 ml-15">
-              Want to partner with us or get your server featured? Fill out this
-              form and we'll review your request.
-            </p>
-
-            <form onSubmit={handleRpSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Server Name */}
-                <div>
-                  <label
-                    htmlFor="serverName"
-                    className="block text-sm font-medium text-gray-400 mb-2"
-                  >
-                    Server Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="serverName"
-                    name="serverName"
-                    value={rpFormData.serverName}
-                    onChange={handleRpChange}
-                    required
-                    className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors"
-                    placeholder="My Awesome RP Server"
-                  />
-                </div>
-
-                {/* Owner Name */}
-                <div>
-                  <label
-                    htmlFor="ownerName"
-                    className="block text-sm font-medium text-gray-400 mb-2"
-                  >
-                    Owner Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="ownerName"
-                    name="ownerName"
-                    value={rpFormData.ownerName}
-                    onChange={handleRpChange}
-                    required
-                    className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors"
-                    placeholder="John Doe"
-                  />
-                </div>
-
-                {/* Discord ID */}
-                <div>
-                  <label
-                    htmlFor="discordId"
-                    className="block text-sm font-medium text-gray-400 mb-2"
-                  >
-                    Your Discord ID *
-                  </label>
-                  <input
-                    type="text"
-                    id="discordId"
-                    name="discordId"
-                    value={rpFormData.discordId}
-                    onChange={handleRpChange}
-                    required
-                    className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors"
-                    placeholder="123456789012345678"
-                  />
-                </div>
-
-                {/* Player Count */}
-                <div>
-                  <label
-                    htmlFor="playerCount"
-                    className="block text-sm font-medium text-gray-400 mb-2"
-                  >
-                    Average Player Count
-                  </label>
-                  <input
-                    type="text"
-                    id="playerCount"
-                    name="playerCount"
-                    value={rpFormData.playerCount}
-                    onChange={handleRpChange}
-                    className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors"
-                    placeholder="32/64"
-                  />
-                </div>
-              </div>
-
-              {/* Server IP */}
-              <div>
-                <label
-                  htmlFor="serverIP"
-                  className="block text-sm font-medium text-gray-400 mb-2"
-                >
-                  Server IP/Connect Link
-                </label>
-                <input
-                  type="text"
-                  id="serverIP"
-                  name="serverIP"
-                  value={rpFormData.serverIP}
-                  onChange={handleRpChange}
-                  className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors"
-                  placeholder="connect cfx.re/join/abc123"
-                />
-              </div>
-
-              {/* Server Description */}
-              <div>
-                <label
-                  htmlFor="serverDescription"
-                  className="block text-sm font-medium text-gray-400 mb-2"
-                >
-                  Server Description *
-                </label>
-                <textarea
-                  id="serverDescription"
-                  name="serverDescription"
-                  value={rpFormData.serverDescription}
-                  onChange={handleRpChange}
-                  required
-                  rows={4}
-                  className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors resize-none"
-                  placeholder="Describe your server, what makes it unique, game mode, features, etc..."
-                />
-              </div>
-
-              {/* Additional Info */}
-              <div>
-                <label
-                  htmlFor="additionalInfo"
-                  className="block text-sm font-medium text-gray-400 mb-2"
-                >
-                  Additional Information
-                </label>
-                <textarea
-                  id="additionalInfo"
-                  name="additionalInfo"
-                  value={rpFormData.additionalInfo}
-                  onChange={handleRpChange}
-                  rows={3}
-                  className="w-full px-4 py-3 bg-black-deep border border-gold/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold/50 transition-colors resize-none"
-                  placeholder="Any other details you'd like to share..."
-                />
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isRpSubmitting}
-                className="w-full px-6 py-4 bg-gradient-to-r from-gold via-gold-light to-gold text-black-deep font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-gold/50 transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
-              >
-                {isRpSubmitting ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-black-deep border-t-transparent rounded-full animate-spin" />
-                    Submitting Request...
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    Submit Server Request
-                  </>
-                )}
-              </button>
-
-              {/* Success Message */}
-              {rpSubmitStatus === "success" && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-center"
-                >
-                  🎉 Server invite request submitted successfully! We'll review
-                  it and get back to you soon.
-                </motion.div>
-              )}
-
-              {/* Error Message */}
-              {rpSubmitStatus === "error" && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-center"
-                >
-                  ❌ Failed to submit request. Please try again or contact us
-                  directly.
-                </motion.div>
-              )}
-            </form>
-          </div>
-        </motion.div>
       </div>
     </div>
   );

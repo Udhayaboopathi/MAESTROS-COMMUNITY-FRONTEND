@@ -185,4 +185,38 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* SystemUI Animations */
+  @keyframes orbit {
+    0% {
+      transform: rotate(0deg) translateX(90px) rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg) translateX(90px) rotate(-360deg);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-orbit {
+    animation: orbit 4s linear infinite;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(212, 175, 55, 0.3),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
 }

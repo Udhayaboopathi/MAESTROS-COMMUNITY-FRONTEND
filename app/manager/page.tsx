@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/lib/contexts/AuthContext";
+import { useSystemUI } from "@/lib/contexts/SystemUIContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
@@ -97,10 +98,12 @@ export default function ManagerPanel() {
 
 // Games Tab Component
 function GamesTab() {
+  const systemUI = useSystemUI();
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingGame, setEditingGame] = useState<any>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -119,20 +122,37 @@ function GamesTab() {
     try {
       const response = await api.get("/games");
       setGames(response.data.games);
+      setLoading(false);
     } catch (error) {
       console.error("Failed to load games:", error);
-    } finally {
       setLoading(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+
     try {
       if (editingGame) {
         await api.put(`/games/${editingGame._id}`, formData);
+        systemUI.showAlert({
+          type: "success",
+          title: "Game Updated!",
+          message: "Game information updated successfully.",
+          autoDismiss: 5000,
+        });
       } else {
-        await api.post("/games", formData);
+        const response = await api.post("/games", formData);
+        const discordCreated = response.data.discord_created;
+        systemUI.showAlert({
+          type: "success",
+          title: "Game Created!",
+          message: discordCreated
+            ? "Discord category, role, and channels have been created successfully."
+            : "Game created successfully! (Discord setup skipped)",
+          autoDismiss: 5000,
+        });
       }
       setShowForm(false);
       setEditingGame(null);
@@ -147,18 +167,42 @@ function GamesTab() {
       });
       loadGames();
     } catch (error: any) {
-      alert(error.response?.data?.detail || "Failed to save game");
+      systemUI.showAlert({
+        type: "error",
+        message:
+          error.response?.data?.detail ||
+          "Failed to save game. Please try again.",
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this game?")) return;
-    try {
-      await api.delete(`/games/${id}`);
-      loadGames();
-    } catch (error: any) {
-      alert(error.response?.data?.detail || "Failed to delete game");
-    }
+  const handleDelete = async (id: string, gameName: string) => {
+    systemUI.showConfirm({
+      type: "delete",
+      title: "Delete Game",
+      message: `Are you sure you want to delete "${gameName}"? This will remove it from the database but you must manually delete Discord channels.`,
+      onConfirm: async () => {
+        try {
+          await api.delete(`/games/${id}`);
+          systemUI.showNotification({
+            type: "toast",
+            title: "Game Deleted",
+            message: `"${gameName}" deleted successfully! Remember to manually delete Discord category and role.`,
+            autoDismiss: 7000,
+          });
+          loadGames();
+        } catch (error: any) {
+          systemUI.showAlert({
+            type: "error",
+            message:
+              error.response?.data?.detail ||
+              "Failed to delete game. Please try again.",
+          });
+        }
+      },
+    });
   };
 
   const handleEdit = (game: any) => {
@@ -280,18 +324,6 @@ function GamesTab() {
                 />
               </div>
               <div>
-                <label className="block text-gray-400 mb-2">Clan/Crew</label>
-                <input
-                  type="text"
-                  value={formData.clan}
-                  onChange={(e) =>
-                    setFormData({ ...formData, clan: e.target.value })
-                  }
-                  placeholder="e.g., Maestros, Crow"
-                  className="w-full px-4 py-2 bg-black-charcoal border border-steel rounded-lg text-white"
-                />
-              </div>
-              <div>
                 <label className="flex items-center gap-2 text-gray-400">
                   <input
                     type="checkbox"
@@ -308,15 +340,30 @@ function GamesTab() {
             <div className="flex gap-4">
               <button
                 type="submit"
-                className="flex items-center gap-2 px-6 py-2 bg-gradient-gold text-black font-bold rounded-lg hover:opacity-90"
+                disabled={submitting}
+                className="flex items-center gap-2 px-6 py-2 bg-gradient-gold text-black font-bold rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Save className="w-5 h-5" />
-                Save
+                {submitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                    <span>
+                      {editingGame
+                        ? "Updating..."
+                        : "Creating Discord Setup..."}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-5 h-5" />
+                    Save
+                  </>
+                )}
               </button>
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="px-6 py-2 bg-gray-600 text-white font-bold rounded-lg hover:bg-gray-700"
+                disabled={submitting}
+                className="px-6 py-2 bg-gray-600 text-white font-bold rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
@@ -326,7 +373,104 @@ function GamesTab() {
       )}
 
       {loading ? (
-        <div className="text-center py-8">Loading games...</div>
+        <div className="min-h-[400px] bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal flex items-center justify-center rounded-xl">
+          <div className="text-center">
+            <div className="relative w-40 h-40 mx-auto mb-8">
+              {/* Outer spinning ring */}
+              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold border-r-gold animate-spin" />
+
+              {/* Middle pulsing ring */}
+              <div className="absolute inset-3 rounded-full border-2 border-gold/30 animate-pulse" />
+
+              {/* Logo in center */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Gamepad2 className="w-24 h-24 text-gold animate-pulse" />
+              </div>
+
+              {/* Inner rotating ring */}
+              <div
+                className="absolute inset-6 rounded-full border-2 border-transparent border-b-gold-light animate-spin"
+                style={{
+                  animationDirection: "reverse",
+                  animationDuration: "1.5s",
+                }}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-gold text-xl font-bold bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+                Loading Games
+              </p>
+              <div className="flex justify-center gap-1">
+                <div
+                  className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                />
+                <div
+                  className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                  style={{ animationDelay: "150ms" }}
+                />
+                <div
+                  className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : submitting ? (
+        <div className="min-h-[400px] bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal flex items-center justify-center rounded-xl">
+          <div className="text-center">
+            <div className="relative w-40 h-40 mx-auto mb-8">
+              {/* Outer spinning ring */}
+              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold border-r-gold animate-spin" />
+
+              {/* Middle pulsing ring */}
+              <div className="absolute inset-3 rounded-full border-2 border-gold/30 animate-pulse" />
+
+              {/* Discord Logo in center */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-24 h-24 flex items-center justify-center bg-gold/10 rounded-full animate-pulse">
+                  <span className="text-4xl">🎮</span>
+                </div>
+              </div>
+
+              {/* Inner rotating ring */}
+              <div
+                className="absolute inset-6 rounded-full border-2 border-transparent border-b-gold-light animate-spin"
+                style={{
+                  animationDirection: "reverse",
+                  animationDuration: "1.5s",
+                }}
+              />
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-gold text-xl font-bold bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+                {editingGame ? "Updating Game..." : "Creating Discord Setup..."}
+              </p>
+              <p className="text-gray-400 text-sm max-w-md mx-auto">
+                {editingGame
+                  ? "Saving your changes..."
+                  : "Creating category, role, and channels in Discord. This may take a few seconds..."}
+              </p>
+              <div className="flex justify-center gap-1">
+                <div
+                  className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                />
+                <div
+                  className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                  style={{ animationDelay: "150ms" }}
+                />
+                <div
+                  className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {games.map((game) => (
@@ -371,7 +515,7 @@ function GamesTab() {
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDelete(game._id)}
+                  onClick={() => handleDelete(game._id, game.name)}
                   className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -388,6 +532,7 @@ function GamesTab() {
 
 // Applications Tab Component
 function ApplicationsTab() {
+  const systemUI = useSystemUI();
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -421,15 +566,26 @@ function ApplicationsTab() {
       setSelectedApp(null);
       setAcceptNotes("");
       loadApplications();
-      alert("Application accepted successfully!");
+      systemUI.showAlert({
+        type: "success",
+        title: "Application Accepted!",
+        message: "The application has been accepted successfully.",
+        autoDismiss: 5000,
+      });
     } catch (error: any) {
-      alert(error.response?.data?.detail || "Failed to accept application");
+      systemUI.showAlert({
+        type: "error",
+        message: error.response?.data?.detail || "Failed to accept application",
+      });
     }
   };
 
   const handleReject = async () => {
     if (!selectedApp || rejectReason.length < 10) {
-      alert("Rejection reason must be at least 10 characters");
+      systemUI.showAlert({
+        type: "error",
+        message: "Rejection reason must be at least 10 characters",
+      });
       return;
     }
     try {
@@ -440,21 +596,44 @@ function ApplicationsTab() {
       setSelectedApp(null);
       setRejectReason("");
       loadApplications();
-      alert("Application rejected");
+      systemUI.showAlert({
+        type: "success",
+        title: "Application Rejected",
+        message: "The application has been rejected.",
+        autoDismiss: 5000,
+      });
     } catch (error: any) {
-      alert(error.response?.data?.detail || "Failed to reject application");
+      systemUI.showAlert({
+        type: "error",
+        message: error.response?.data?.detail || "Failed to reject application",
+      });
     }
   };
 
   const handleDelete = async (appId: string) => {
-    if (!confirm("Are you sure you want to delete this application?")) return;
-    try {
-      await api.delete(`/applications/manager/${appId}`);
-      loadApplications();
-      alert("Application deleted");
-    } catch (error: any) {
-      alert(error.response?.data?.detail || "Failed to delete application");
-    }
+    systemUI.showConfirm({
+      type: "delete",
+      title: "Delete Application",
+      message: "Are you sure you want to delete this application?",
+      onConfirm: async () => {
+        try {
+          await api.delete(`/applications/manager/${appId}`);
+          loadApplications();
+          systemUI.showNotification({
+            type: "toast",
+            title: "Application Deleted",
+            message: "The application has been deleted successfully.",
+            autoDismiss: 5000,
+          });
+        } catch (error: any) {
+          systemUI.showAlert({
+            type: "error",
+            message:
+              error.response?.data?.detail || "Failed to delete application",
+          });
+        }
+      },
+    });
   };
 
   const getStatusColor = (status: string) => {
@@ -810,12 +989,14 @@ function ApplicationsTab() {
                   <>
                     <button
                       onClick={() => {
-                        setSelectedApp(app);
-                        const notes = prompt("Optional notes for acceptance:");
-                        if (notes !== null) {
-                          setAcceptNotes(notes);
-                          handleAccept(app._id);
-                        }
+                        systemUI.showConfirm({
+                          type: "permission",
+                          title: "Accept Application",
+                          message: `Are you sure you want to accept ${
+                            app.in_game_name || app.user_info?.username
+                          }'s application?`,
+                          onConfirm: () => handleAccept(app._id),
+                        });
                       }}
                       className="flex items-center gap-1 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                     >
@@ -891,6 +1072,7 @@ function ApplicationsTab() {
 
 // Rules Tab Component
 function RulesTab() {
+  const systemUI = useSystemUI();
   const [rules, setRules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -934,7 +1116,10 @@ function RulesTab() {
     // Filter out empty rules
     const filteredRules = formData.rules.filter((r) => r.trim() !== "");
     if (filteredRules.length === 0) {
-      alert("Please add at least one rule");
+      systemUI.showAlert({
+        type: "error",
+        message: "Please add at least one rule",
+      });
       return;
     }
 
@@ -960,19 +1145,43 @@ function RulesTab() {
         active: true,
       });
       loadRules();
+      systemUI.showAlert({
+        type: "success",
+        title: editingRule ? "Rule Updated!" : "Rule Created!",
+        message: "The rule section has been saved successfully.",
+        autoDismiss: 5000,
+      });
     } catch (error: any) {
-      alert(error.response?.data?.detail || "Failed to save rule");
+      systemUI.showAlert({
+        type: "error",
+        message: error.response?.data?.detail || "Failed to save rule",
+      });
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this rule section?")) return;
-    try {
-      await api.delete(`/rules/${id}`);
-      loadRules();
-    } catch (error: any) {
-      alert(error.response?.data?.detail || "Failed to delete rule");
-    }
+    systemUI.showConfirm({
+      type: "delete",
+      title: "Delete Rule Section",
+      message: "Are you sure you want to delete this rule section?",
+      onConfirm: async () => {
+        try {
+          await api.delete(`/rules/${id}`);
+          loadRules();
+          systemUI.showNotification({
+            type: "toast",
+            title: "Rule Deleted",
+            message: "The rule section has been deleted successfully.",
+            autoDismiss: 5000,
+          });
+        } catch (error: any) {
+          systemUI.showAlert({
+            type: "error",
+            message: error.response?.data?.detail || "Failed to delete rule",
+          });
+        }
+      },
+    });
   };
 
   const handleEdit = (rule: any) => {
