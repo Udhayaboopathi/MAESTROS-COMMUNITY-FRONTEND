@@ -7,12 +7,12 @@ import UserDetailsModal from "@/components/modals/UserDetailsModal";
 
 export default function Sidebar() {
   const { stats, loading: statsLoading } = useDiscordStats();
-  const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSidebarUser, setSelectedSidebarUser] = useState<any>(null);
+  const [isSidebarModalOpen, setIsSidebarModalOpen] = useState(false);
 
-  const handleUserClick = (user: any) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
+  const handleSidebarUserClick = (user: any) => {
+    setSelectedSidebarUser(user);
+    setIsSidebarModalOpen(true);
   };
 
   return (
@@ -59,98 +59,128 @@ export default function Sidebar() {
               </div>
 
               {/* CEO Online */}
-              {stats?.ceo_online && stats.ceo_online.length > 0 && (
-                <div className="mt-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Crown className="w-3 h-3 text-gold" />
-                    <span className="text-xs text-gray-400">
-                      CEO Online ({stats.ceo_online.length})
-                    </span>
-                  </div>
-                  <div className="max-h-20 overflow-y-auto scrollbar-gold space-y-1">
-                    {stats.ceo_online.map((ceo: any, idx: number) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleUserClick(ceo)}
-                        className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
-                      >
-                        <div className="text-gold font-semibold">
-                          {typeof ceo === "string" ? ceo : ceo.display_name}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Manager Online */}
-              {stats?.manager_online && stats.manager_online.length > 0 && (
-                <div className="mt-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Crown className="w-3 h-3 text-gold" />
-                    <span className="text-xs text-gray-400">
-                      Manager Online ({stats.manager_online.length})
-                    </span>
-                  </div>
-                  <div className="max-h-20 overflow-y-auto scrollbar-gold space-y-1">
-                    {stats.manager_online.map((manager: any, idx: number) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleUserClick(manager)}
-                        className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
-                      >
-                        <div className="text-gold font-semibold">
-                          {typeof manager === "string"
-                            ? manager
-                            : manager.display_name}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Community Members Online */}
-              {stats?.community_member_online &&
-                stats.community_member_online.length > 0 && (
+              {stats?.managers &&
+                stats.managers.filter((m: any) => m.permissions?.is_ceo)
+                  .length > 0 && (
                   <div className="mt-3">
-                    <span className="text-xs text-gray-400">
-                      Community Members Online (
-                      {stats.community_member_online.length})
-                    </span>
-                    <div className="max-h-24 overflow-y-auto scrollbar-gold space-y-1 mt-2">
-                      {stats.community_member_online
-                        .slice(0, 10)
-                        .map((member: any, idx: number) => (
+                    <div className="flex items-center gap-2 mb-2">
+                      <Crown className="w-3 h-3 text-gold" />
+                      <span className="text-xs text-gray-400">
+                        CEO Online (
+                        {
+                          stats.managers.filter(
+                            (m: any) => m.permissions?.is_ceo
+                          ).length
+                        }
+                        )
+                      </span>
+                    </div>
+                    <div className="max-h-32 lg:max-h-20 overflow-y-auto scrollbar-gold space-y-1">
+                      {stats.managers
+                        .filter((m: any) => m.permissions?.is_ceo)
+                        .map((ceo: any, idx: number) => (
                           <button
-                            key={idx}
-                            onClick={() => handleUserClick(member)}
-                            className="text-xs pl-2 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                            key={ceo.discord_id || idx}
+                            onClick={() => handleSidebarUserClick(ceo)}
+                            className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
                           >
-                            <div className="text-gray-300 font-medium">
-                              {typeof member === "string"
-                                ? member
-                                : member.display_name}
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full flex-shrink-0 bg-green-500" />
+                              <div className="text-gold font-semibold truncate">
+                                {ceo.display_name || ceo.username}
+                              </div>
                             </div>
                           </button>
                         ))}
-                      {stats.community_member_online.length > 10 && (
-                        <div className="text-xs text-gray-500 pl-2">
-                          +{stats.community_member_online.length - 10} more
-                        </div>
-                      )}
                     </div>
                   </div>
                 )}
+
+              {/* Manager Online */}
+              {stats?.managers &&
+                stats.managers.filter(
+                  (m: any) =>
+                    m.permissions?.is_manager && !m.permissions?.is_ceo
+                ).length > 0 && (
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Crown className="w-3 h-3 text-gold" />
+                      <span className="text-xs text-gray-400">
+                        Manager Online (
+                        {
+                          stats.managers.filter(
+                            (m: any) =>
+                              m.permissions?.is_manager &&
+                              !m.permissions?.is_ceo
+                          ).length
+                        }
+                        )
+                      </span>
+                    </div>
+                    <div className="max-h-32 lg:max-h-20 overflow-y-auto scrollbar-gold space-y-1">
+                      {stats.managers
+                        .filter(
+                          (m: any) =>
+                            m.permissions?.is_manager && !m.permissions?.is_ceo
+                        )
+                        .map((manager: any, idx: number) => (
+                          <button
+                            key={manager.discord_id || idx}
+                            onClick={() => handleSidebarUserClick(manager)}
+                            className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full flex-shrink-0 bg-green-500" />
+                              <div className="text-gold font-semibold truncate">
+                                {manager.display_name || manager.username}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Community Members Online */}
+              {stats?.members && stats.members.length > 0 && (
+                <div className="mt-3">
+                  <span className="text-xs text-gray-400">
+                    Community Members Online ({stats.members.length})
+                  </span>
+                  <div className="max-h-48 lg:max-h-24 overflow-y-auto scrollbar-gold space-y-1 mt-2">
+                    {stats.members
+                      .slice(0, 10)
+                      .map((member: any, idx: number) => (
+                        <button
+                          key={member.discord_id || idx}
+                          onClick={() => handleSidebarUserClick(member)}
+                          className="text-xs pl-2 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full flex-shrink-0 bg-green-500" />
+                            <div className="text-gray-300 font-medium truncate">
+                              {member.display_name || member.username}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    {stats.members.length > 10 && (
+                      <div className="text-xs text-gray-500 pl-2">
+                        +{stats.members.length - 10} more
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
 
       <UserDetailsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        user={selectedUser}
+        isOpen={isSidebarModalOpen}
+        onClose={() => setIsSidebarModalOpen(false)}
+        user={selectedSidebarUser}
       />
     </aside>
   );

@@ -4,9 +4,9 @@ import api from "@/lib/api";
 interface DiscordStats {
   total: number;
   online: number;
-  ceo_online: string[];
-  manager_online: string[];
-  community_member_online: string[];
+  managers: any[];
+  members: any[];
+  last_update: string | null;
 }
 
 export function useDiscordStats() {

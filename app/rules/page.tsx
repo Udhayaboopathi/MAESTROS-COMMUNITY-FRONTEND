@@ -53,20 +53,54 @@ export default function RulesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-gold-light text-xl flex items-center gap-3"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          >
-            <Shield className="w-8 h-8" />
-          </motion.div>
-          Loading rules...
-        </motion.div>
+      <div className="min-h-screen bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative w-40 h-40 mx-auto mb-8">
+            {/* Outer spinning ring */}
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold border-r-gold animate-spin" />
+
+            {/* Middle pulsing ring */}
+            <div className="absolute inset-3 rounded-full border-2 border-gold/30 animate-pulse" />
+
+            {/* Logo in center */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img
+                src="/logo.png"
+                alt="Loading..."
+                className="w-24 h-24 object-contain animate-pulse"
+              />
+            </div>
+
+            {/* Inner rotating ring */}
+            <div
+              className="absolute inset-6 rounded-full border-2 border-transparent border-b-gold-light animate-spin"
+              style={{
+                animationDirection: "reverse",
+                animationDuration: "1.5s",
+              }}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-gold text-xl font-bold bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+              Loading Rules
+            </p>
+            <div className="flex justify-center gap-1">
+              <div
+                className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              />
+              <div
+                className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              />
+              <div
+                className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -49,17 +49,17 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black-charcoal/95 backdrop-blur-sm border-b border-steel">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="text-2xl font-bold bg-gradient-gold bg-clip-text text-transparent">
-              MAESTROS
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
+            <div className="text-xl lg:text-2xl font-bold bg-gradient-gold bg-clip-text text-transparent whitespace-nowrap">
+              MAESTROS COMMUNITY
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-1 flex-1 justify-center">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -67,7 +67,7 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ${
                     isActive
                       ? "bg-gradient-gold text-black font-semibold"
                       : "text-gray-300 hover:text-gold hover:bg-gold/10"
@@ -81,23 +81,23 @@ export default function Navbar() {
           </div>
 
           {/* Auth Button */}
-          <div className="hidden md:flex items-center">
+          <div className="hidden lg:flex items-center flex-shrink-0">
             {isLoading ? (
               <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
             ) : user ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => router.push("/dashboard")}
-                  className="flex items-center gap-2 px-4 py-2 text-gold hover:bg-gold/10 rounded-lg transition-all"
+                  className="flex items-center gap-2 px-3 py-2 text-gold hover:bg-gold/10 rounded-lg transition-all"
                 >
                   <User className="w-4 h-4" />
-                  <span className="text-sm">
+                  <span className="text-sm max-w-[120px] truncate">
                     {user.display_name || user.username}
                   </span>
                 </button>
                 <button
                   onClick={logout}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                  className="flex items-center gap-2 px-3 py-2 text-gray-300 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="text-sm">Logout</span>
@@ -117,7 +117,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-gold hover:bg-gold/10 rounded-lg transition-all"
+            className="lg:hidden p-2 text-gold hover:bg-gold/10 rounded-lg transition-all"
           >
             {isMobileMenuOpen ? (
               <X className="w-6 h-6" />
@@ -130,7 +130,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-steel bg-black-charcoal max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div className="lg:hidden border-t border-steel bg-black-charcoal max-h-[calc(100vh-4rem)] overflow-y-auto">
           {/* Discord Stats Section */}
           <div className="px-4 py-4 border-b border-steel">
             <div className="flex justify-center mb-4">
@@ -167,89 +167,120 @@ export default function Navbar() {
                 </div>
 
                 {/* CEO Online */}
-                {stats?.ceo_online && stats.ceo_online.length > 0 && (
-                  <div className="mt-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Crown className="w-3 h-3 text-gold" />
-                      <span className="text-xs text-gray-400">
-                        CEO Online ({stats.ceo_online.length})
-                      </span>
-                    </div>
-                    <div className="space-y-1">
-                      {stats.ceo_online.map((ceo: any, idx: number) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleUserClick(ceo)}
-                          className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
-                        >
-                          <div className="text-gold font-semibold">
-                            {typeof ceo === "string" ? ceo : ceo.display_name}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Manager Online */}
-                {stats?.manager_online && stats.manager_online.length > 0 && (
-                  <div className="mt-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Crown className="w-3 h-3 text-gold" />
-                      <span className="text-xs text-gray-400">
-                        Manager Online ({stats.manager_online.length})
-                      </span>
-                    </div>
-                    <div className="space-y-1">
-                      {stats.manager_online.map((manager: any, idx: number) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleUserClick(manager)}
-                          className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
-                        >
-                          <div className="text-gold font-semibold">
-                            {typeof manager === "string"
-                              ? manager
-                              : manager.display_name}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Community Members Online */}
-                {stats?.community_member_online &&
-                  stats.community_member_online.length > 0 && (
+                {stats?.managers &&
+                  stats.managers.filter((m: any) => m.permissions?.is_ceo)
+                    .length > 0 && (
                     <div className="mt-3">
-                      <span className="text-xs text-gray-400">
-                        Community Members Online (
-                        {stats.community_member_online.length})
-                      </span>
-                      <div className="space-y-1 mt-2">
-                        {stats.community_member_online
-                          .slice(0, 5)
-                          .map((member: any, idx: number) => (
+                      <div className="flex items-center gap-2 mb-2">
+                        <Crown className="w-3 h-3 text-gold" />
+                        <span className="text-xs text-gray-400">
+                          CEO Online (
+                          {
+                            stats.managers.filter(
+                              (m: any) => m.permissions?.is_ceo
+                            ).length
+                          }
+                          )
+                        </span>
+                      </div>
+                      <div className="space-y-1">
+                        {stats.managers
+                          .filter((m: any) => m.permissions?.is_ceo)
+                          .map((ceo: any, idx: number) => (
                             <button
-                              key={idx}
-                              onClick={() => handleUserClick(member)}
-                              className="text-xs pl-2 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                              key={ceo.discord_id || idx}
+                              onClick={() => handleUserClick(ceo)}
+                              className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
                             >
-                              <div className="text-gray-300 font-medium">
-                                {typeof member === "string"
-                                  ? member
-                                  : member.display_name}
+                              <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-green-500" />
+                                <div className="text-gold font-semibold truncate">
+                                  {ceo.display_name || ceo.username}
+                                </div>
                               </div>
                             </button>
                           ))}
-                        {stats.community_member_online.length > 5 && (
-                          <div className="text-xs text-gray-500 pl-2">
-                            +{stats.community_member_online.length - 5} more
-                          </div>
-                        )}
                       </div>
                     </div>
                   )}
+
+                {/* Manager Online */}
+                {stats?.managers &&
+                  stats.managers.filter(
+                    (m: any) =>
+                      m.permissions?.is_manager && !m.permissions?.is_ceo
+                  ).length > 0 && (
+                    <div className="mt-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Shield className="w-3 h-3 text-gold" />
+                        <span className="text-xs text-gray-400">
+                          Manager Online (
+                          {
+                            stats.managers.filter(
+                              (m: any) =>
+                                m.permissions?.is_manager &&
+                                !m.permissions?.is_ceo
+                            ).length
+                          }
+                          )
+                        </span>
+                      </div>
+                      <div className="space-y-1">
+                        {stats.managers
+                          .filter(
+                            (m: any) =>
+                              m.permissions?.is_manager &&
+                              !m.permissions?.is_ceo
+                          )
+                          .map((manager: any, idx: number) => (
+                            <button
+                              key={manager.discord_id || idx}
+                              onClick={() => handleUserClick(manager)}
+                              className="text-xs pl-5 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-green-500" />
+                                <div className="text-gold font-semibold truncate">
+                                  {manager.display_name || manager.username}
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                {/* Community Members Online */}
+                {stats?.members && stats.members.length > 0 && (
+                  <div className="mt-3">
+                    <span className="text-xs text-gray-400">
+                      Community Members Online ({stats.members.length})
+                    </span>
+                    <div className="space-y-1 mt-2">
+                      {stats.members
+                        .slice(0, 10)
+                        .map((member: any, idx: number) => (
+                          <button
+                            key={member.discord_id || idx}
+                            onClick={() => handleUserClick(member)}
+                            className="text-xs pl-2 w-full text-left hover:bg-steel/30 rounded px-2 py-1 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full flex-shrink-0 bg-green-500" />
+                              <div className="text-gray-300 font-medium truncate">
+                                {member.display_name || member.username}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      {stats.members.length > 10 && (
+                        <div className="text-xs text-gray-500 pl-2">
+                          +{stats.members.length - 10} more
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

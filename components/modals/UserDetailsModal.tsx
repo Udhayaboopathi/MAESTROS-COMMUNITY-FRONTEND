@@ -114,12 +114,59 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
   if (isLoading || !userDetails) {
     return (
       <div
-        className="fixed inset-0 flex items-center justify-center p-4"
+        className="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-md"
         style={{ zIndex: 10000000 }}
       >
-        <div className="fixed inset-0 bg-black opacity-80" onClick={onClose} />
-        <div className="relative bg-black-charcoal border-2 border-gold rounded-lg p-8 text-center">
-          <div className="text-gold-light">Loading user details...</div>
+        <div
+          className="fixed inset-0 bg-gradient-to-br from-black/95 via-black-deep/90 to-black-charcoal/95"
+          onClick={onClose}
+        />
+        <div className="relative text-center">
+          <div className="relative w-40 h-40 mx-auto mb-8">
+            {/* Outer spinning ring */}
+            <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold border-r-gold animate-spin" />
+
+            {/* Middle pulsing ring */}
+            <div className="absolute inset-3 rounded-full border-2 border-gold/30 animate-pulse" />
+
+            {/* Logo in center */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img
+                src="/logo.png"
+                alt="Loading..."
+                className="w-24 h-24 object-contain animate-pulse"
+              />
+            </div>
+
+            {/* Inner rotating ring */}
+            <div
+              className="absolute inset-6 rounded-full border-2 border-transparent border-b-gold-light animate-spin"
+              style={{
+                animationDirection: "reverse",
+                animationDuration: "1.5s",
+              }}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-gold text-xl font-bold bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+              Loading User Details
+            </p>
+            <div className="flex justify-center gap-1">
+              <div
+                className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                style={{ animationDelay: "0ms" }}
+              />
+              <div
+                className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                style={{ animationDelay: "150ms" }}
+              />
+              <div
+                className="w-2 h-2 bg-gold rounded-full animate-bounce"
+                style={{ animationDelay: "300ms" }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -140,26 +187,17 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center p-4 py-8 md:py-12"
+      className="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-md"
       style={{
         zIndex: 10000000,
         pointerEvents: "auto",
-        paddingTop: "80px",
-        paddingBottom: "80px",
       }}
     >
-      {/* Backdrop */}
+      {/* Backdrop with animated gradient */}
       <div
-        className="fixed inset-0"
+        className="fixed inset-0 bg-gradient-to-br from-black/95 via-black-deep/90 to-black-charcoal/95"
         onClick={onClose}
         style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "#000000",
-          opacity: 1,
           zIndex: 9999998,
           pointerEvents: "auto",
         }}
@@ -167,208 +205,337 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-lg bg-black-charcoal border-2 border-gold rounded-lg shadow-2xl max-h-[calc(100vh-160px)] overflow-y-auto"
+        className="relative w-full max-w-4xl bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal rounded-3xl shadow-2xl max-h-[90vh] overflow-hidden border-2 border-gold/30"
         style={{
           zIndex: 9999999,
           pointerEvents: "auto",
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-steel">
-          <h2 className="text-2xl font-bold bg-gradient-gold bg-clip-text text-transparent">
-            User Details
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gold-light transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
+        {/* Decorative corner accents */}
+        <div className="absolute top-0 left-0 w-32 h-32 border-t-2 border-l-2 border-gold/50 rounded-tl-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-32 h-32 border-b-2 border-r-2 border-gold/50 rounded-br-3xl pointer-events-none" />
 
-        {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Avatar and Display Name */}
-          <div className="flex items-center space-x-4">
-            {avatarUrl ? (
-              <img
-                src={avatarUrl}
-                alt={displayName}
-                className="w-20 h-20 rounded-full border-2 border-gold"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
-              />
-            ) : (
-              <div className="w-20 h-20 rounded-full bg-steel flex items-center justify-center border-2 border-gold">
-                <span className="text-3xl font-bold text-gold-light">
-                  {displayName.charAt(0).toUpperCase()}
-                </span>
+        {/* Animated background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gold/5 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 z-10 p-2 rounded-full bg-black-deep/80 hover:bg-gold/20 border border-gold/30 transition-all hover:scale-110"
+        >
+          <X className="w-6 h-6 text-gold" />
+        </button>
+
+        {/* Scrollable Content */}
+        <div className="max-h-[90vh] overflow-y-auto">
+          {/* Hero Header Section */}
+          <div className="relative px-8 pt-12 pb-8">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              {/* Avatar with glow effect */}
+              <div className="relative group">
+                {avatarUrl ? (
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-gold via-gold-light to-gold rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
+                    <img
+                      src={avatarUrl}
+                      alt={displayName}
+                      className="relative w-32 h-32 rounded-full border-4 border-gold/50 ring-8 ring-gold/10 object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-steel to-black-deep flex items-center justify-center border-4 border-gold/50 ring-8 ring-gold/10">
+                    <span className="text-5xl font-bold text-gold">
+                      {displayName.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+
+                {/* Status indicator */}
+                <div className="absolute bottom-2 right-2">
+                  <div
+                    className="w-8 h-8 rounded-full border-4 border-black-charcoal flex items-center justify-center"
+                    style={{
+                      backgroundColor:
+                        userDetails.discord_details?.status === "online"
+                          ? "#23A559"
+                          : userDetails.discord_details?.status === "idle"
+                          ? "#F0B232"
+                          : userDetails.discord_details?.status === "dnd"
+                          ? "#F23F43"
+                          : "#80848E",
+                    }}
+                  >
+                    <span className="w-4 h-4 rounded-full bg-white/20" />
+                  </div>
+                </div>
               </div>
-            )}
-            <div>
-              <h3 className="text-2xl font-bold text-gold-light">
-                {displayName}
-              </h3>
-              {username && username !== displayName && (
-                <p className="text-gray-400 text-sm mt-1">
-                  @{username}
-                  {discriminator && discriminator !== "0"
-                    ? `#${discriminator}`
-                    : ""}
+
+              {/* User Info */}
+              <div className="flex-1 text-center md:text-left">
+                <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+                  {displayName}
+                </h2>
+                {username && username !== displayName && (
+                  <p className="text-gray-400 text-lg mb-2">
+                    @{username}
+                    {discriminator && discriminator !== "0"
+                      ? `#${discriminator}`
+                      : ""}
+                  </p>
+                )}
+                <p className="text-sm text-gold/60 font-mono">
+                  ID: {userDetails.discord_id}
                 </p>
+
+                {/* Highest Role Badge */}
+                {userDetails.highest_role?.name && (
+                  <div className="mt-4 inline-flex items-center gap-2">
+                    <div
+                      className="px-6 py-2 rounded-full font-bold text-lg shadow-lg"
+                      style={{
+                        background: `linear-gradient(135deg, ${
+                          userDetails.highest_role?.color || "#99AAB5"
+                        } 0%, ${
+                          userDetails.highest_role?.color || "#99AAB5"
+                        }dd 100%)`,
+                        color:
+                          userDetails.highest_role?.color === "#FFD700" ||
+                          userDetails.highest_role?.color === "#00FF00"
+                            ? "#000"
+                            : "#fff",
+                        boxShadow: `0 0 20px ${
+                          userDetails.highest_role?.color || "#99AAB5"
+                        }66`,
+                        border: `2px solid ${
+                          userDetails.highest_role?.color || "#99AAB5"
+                        }`,
+                      }}
+                    >
+                      {userDetails.highest_role.name}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Details Grid */}
+          <div className="px-8 pb-8 grid md:grid-cols-2 gap-4">
+            {/* Username Card */}
+            <div className="bg-black-deep/50 backdrop-blur rounded-xl p-5 border border-gold/10 hover:border-gold/30 transition-all hover:transform hover:scale-105">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gold/20 to-gold-light/20 flex items-center justify-center border border-gold/30">
+                  <span className="text-gold font-bold text-lg">@</span>
+                </div>
+                <h4 className="text-gold font-bold text-lg">Username</h4>
+              </div>
+              <p className="text-white text-base mb-2">
+                @{userDetails.username || "N/A"}
+              </p>
+              <div className="mt-3 pt-3 border-t border-gold/10">
+                <p className="text-gray-400 text-xs mb-1">Global Name:</p>
+                <p className="text-white/80 text-sm">
+                  {userDetails.discord_details?.global_name || "Not set"}
+                </p>
+              </div>
+            </div>
+
+            {/* Server Nickname Card */}
+            <div className="bg-black-deep/50 backdrop-blur rounded-xl p-5 border border-gold/10 hover:border-gold/30 transition-all hover:transform hover:scale-105">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gold/20 to-gold-light/20 flex items-center justify-center border border-gold/30">
+                  <span className="text-gold font-bold text-lg">✏️</span>
+                </div>
+                <h4 className="text-gold font-bold text-lg">Server Nickname</h4>
+              </div>
+              <p className="text-white text-base">
+                {userDetails.discord_details?.server_nickname || "Not set"}
+              </p>
+            </div>
+
+            {/* Join Date Card */}
+            <div className="bg-black-deep/50 backdrop-blur rounded-xl p-5 border border-gold/10 hover:border-gold/30 transition-all hover:transform hover:scale-105">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gold/20 to-gold-light/20 flex items-center justify-center border border-gold/30">
+                  <span className="text-gold font-bold text-lg">📅</span>
+                </div>
+                <h4 className="text-gold font-bold text-lg">Joined Server</h4>
+              </div>
+              <p className="text-white text-base mb-2">
+                {userDetails.discord_details?.joined_at
+                  ? new Date(
+                      userDetails.discord_details.joined_at
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
+                  : userDetails.joined_at
+                  ? new Date(userDetails.joined_at).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )
+                  : "Not available"}
+              </p>
+              {userDetails.discord_details?.premium_since && (
+                <div className="mt-3 pt-3 border-t border-gold/10">
+                  <p className="text-pink-400 text-sm flex items-center gap-2">
+                    <span>🚀</span>
+                    Server Booster
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Account Created Card */}
+            <div className="bg-black-deep/50 backdrop-blur rounded-xl p-5 border border-gold/10 hover:border-gold/30 transition-all hover:transform hover:scale-105">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gold/20 to-gold-light/20 flex items-center justify-center border border-gold/30">
+                  <span className="text-gold font-bold text-lg">🎂</span>
+                </div>
+                <h4 className="text-gold font-bold text-lg">Account Age</h4>
+              </div>
+              <p className="text-white text-base mb-2">
+                {userDetails.account_created_at
+                  ? new Date(userDetails.account_created_at).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )
+                  : "Not available"}
+              </p>
+              {userDetails.account_created_at && (
+                <div className="mt-3 pt-3 border-t border-gold/10">
+                  <p className="text-gray-400 text-sm">
+                    {(() => {
+                      const created = new Date(userDetails.account_created_at);
+                      const now = new Date();
+                      const diffTime = Math.abs(
+                        now.getTime() - created.getTime()
+                      );
+                      const diffDays = Math.ceil(
+                        diffTime / (1000 * 60 * 60 * 24)
+                      );
+                      const years = Math.floor(diffDays / 365);
+                      const months = Math.floor((diffDays % 365) / 30);
+
+                      const parts = [];
+                      if (years > 0)
+                        parts.push(`${years} year${years !== 1 ? "s" : ""}`);
+                      if (months > 0)
+                        parts.push(`${months} month${months !== 1 ? "s" : ""}`);
+
+                      return parts.join(", ") || "Less than a month";
+                    })()}
+                  </p>
+                </div>
               )}
             </div>
           </div>
 
-          {/* Comprehensive Discord Information */}
-          <div className="space-y-4">
-            {/* 1. Username */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">1.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-1">Username</h4>
-                  <p className="text-white text-sm mb-1">
-                    @{userDetails.username || "N/A"}
-                  </p>
-                  <div className="mt-2 pt-2 border-t border-steel">
-                    <p className="text-gray-400 text-xs mb-1">
-                      Global Discord Name:
-                    </p>
-                    <p className="text-white text-sm">
-                      {userDetails.discord_details?.global_name || "Not set"}
-                    </p>
+          {/* Activity Section */}
+          {userDetails.discord_details?.activity_data && (
+            <div className="px-8 pb-6">
+              <div className="bg-gradient-to-br from-gold/5 via-black-deep/50 to-gold/5 backdrop-blur rounded-2xl p-6 border border-gold/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/30 to-gold-light/30 flex items-center justify-center border border-gold/40">
+                    <span className="text-gold font-bold text-xl">🎮</span>
                   </div>
+                  <h3 className="text-2xl font-bold text-gold">
+                    Current Activity
+                  </h3>
                 </div>
-              </div>
-            </div>
-            {/* 2. User ID */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">2.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-1">User ID</h4>
-                  <p className="text-white font-mono text-sm mb-1">
-                    {userDetails.discord_id}
-                  </p>
-                </div>
-              </div>
-            </div>
-            {/* 3. Avatar (Profile Picture) */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">3.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-2">
-                    Avatar (Profile Picture)
-                  </h4>
-                  {avatarUrl ? (
-                    <img
-                      src={avatarUrl}
-                      alt="Avatar"
-                      className="w-20 h-20 rounded-full border-2 border-gold mb-2"
-                    />
-                  ) : (
-                    <p className="text-gray-400 text-sm">
-                      No custom avatar set
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-            {/* 4. Server Nickname */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">4.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-1">
-                    Server Nickname
-                  </h4>
-                  <p className="text-white text-sm mb-1">
-                    {userDetails.discord_details?.server_nickname || "Not set"}
-                  </p>
-                </div>
-              </div>
-            </div>
-            {/* 5. Server Avatar (If Set) */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">5.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-1">
-                    Server Avatar
-                  </h4>
-                  <p className="text-white text-sm mb-1">
-                    {userDetails.discord_details?.server_avatar || "Not set"}
-                  </p>
-                </div>
-              </div>
-            </div>
-            {/* 6. Server Roles (Names & Colors) */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">6.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-2">
-                    Server Roles
-                  </h4>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {(() => {
-                      // Show all role names in Discord server order (highest first)
-                      const roleNames =
-                        userDetails.guild_roles
-                          ?.filter((role) => !/^\d+$/.test(role))
-                          .reverse() || [];
 
-                      const getRoleColor = (roleName: string) => {
-                        // Find the role color from role_colors array
-                        const roleColor = userDetails.role_colors?.find(
-                          (rc) => rc.name === roleName
-                        );
-                        return roleColor?.color || "#99AAB5";
-                      };
-
-                      const getTextColor = (bgColor: string) => {
-                        // Convert hex to RGB and calculate luminance
-                        const hex = bgColor.replace("#", "");
-                        const r = parseInt(hex.substr(0, 2), 16);
-                        const g = parseInt(hex.substr(2, 2), 16);
-                        const b = parseInt(hex.substr(4, 2), 16);
-                        const luminance =
-                          (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-                        return luminance > 0.5 ? "#000000" : "#FFFFFF";
-                      };
-
-                      if (roleNames.length > 0) {
-                        return roleNames.map((role, index) => {
-                          const bgColor = getRoleColor(role);
-                          const textColor = getTextColor(bgColor);
-                          return (
-                            <span
-                              key={index}
-                              className="px-3 py-1 text-sm font-medium rounded border"
-                              style={{
-                                backgroundColor: bgColor,
-                                color: textColor,
-                                borderColor: bgColor,
-                              }}
-                            >
-                              {role}
-                            </span>
-                          );
-                        });
-                      } else {
-                        return (
-                          <span className="text-gray-400 text-sm">
-                            No roles assigned
-                          </span>
-                        );
-                      }
-                    })()}
+                {userDetails.discord_details.activity_data.type ===
+                  "listening" && (
+                  <div className="flex gap-4 items-center">
+                    {userDetails.discord_details.activity_data.large_image && (
+                      <img
+                        src={
+                          userDetails.discord_details.activity_data.large_image
+                        }
+                        alt="Album"
+                        className="w-20 h-20 rounded-lg border-2 border-gold/30"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-green-400 mb-2 font-semibold">
+                        🎵 LISTENING TO SPOTIFY
+                      </p>
+                      <p className="text-white font-bold text-lg truncate">
+                        {userDetails.discord_details.activity_data.name}
+                      </p>
+                      <p className="text-gray-300 text-sm truncate">
+                        by{" "}
+                        {userDetails.discord_details.activity_data.details ||
+                          "Unknown Artist"}
+                      </p>
+                      {userDetails.discord_details.activity_data.state && (
+                        <p className="text-gray-400 text-xs truncate mt-1">
+                          on {userDetails.discord_details.activity_data.state}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-white text-sm mb-1">
+                )}
+
+                {userDetails.discord_details.activity_data.type ===
+                  "playing" && (
+                  <div className="flex gap-4 items-center">
+                    {userDetails.discord_details.activity_data.large_image && (
+                      <img
+                        src={
+                          userDetails.discord_details.activity_data.large_image
+                        }
+                        alt="Game"
+                        className="w-20 h-20 rounded-lg border-2 border-gold/30"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-purple-400 mb-2 font-semibold">
+                        🎮 PLAYING
+                      </p>
+                      <p className="text-white font-bold text-lg truncate">
+                        {userDetails.discord_details.activity_data.name}
+                      </p>
+                      {userDetails.discord_details.activity_data.details && (
+                        <p className="text-gray-300 text-sm truncate">
+                          {userDetails.discord_details.activity_data.details}
+                        </p>
+                      )}
+                      {userDetails.discord_details.activity_data.state && (
+                        <p className="text-gray-400 text-xs truncate mt-1">
+                          {userDetails.discord_details.activity_data.state}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Roles Section */}
+          <div className="px-8 pb-8">
+            <div className="bg-black-deep/50 backdrop-blur rounded-2xl p-6 border border-gold/20">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/30 to-gold-light/30 flex items-center justify-center border border-gold/40">
+                  <span className="text-gold font-bold text-xl">👑</span>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gold">Server Roles</h3>
+                  <p className="text-gray-400 text-sm">
                     {(() => {
                       const roleNames =
                         userDetails.guild_roles?.filter(
@@ -388,342 +555,70 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                   </p>
                 </div>
               </div>
-            </div>
-            {/* 7. Highest Role Display */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">7.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-1">
-                    Highest Role Display
-                  </h4>
-                  <div className="inline-block">
-                    <div
-                      className="px-2 py-1 rounded-lg font-bold text-lg shadow-lg animate-pulse"
-                      style={{
-                        background: `linear-gradient(135deg, ${
-                          userDetails.highest_role?.color || "#99AAB5"
-                        } 0%, ${
-                          userDetails.highest_role?.color || "#99AAB5"
-                        }dd 100%)`,
-                        color:
-                          userDetails.highest_role?.color === "#FFD700" ||
-                          userDetails.highest_role?.color === "#00FF00"
-                            ? "#000"
-                            : "#fff",
-                        boxShadow: `0 0 20px ${
-                          userDetails.highest_role?.color || "#99AAB5"
-                        }66, 0 0 40px ${
-                          userDetails.highest_role?.color || "#99AAB5"
-                        }33`,
-                        border: `2px solid ${
-                          userDetails.highest_role?.color || "#99AAB5"
-                        }`,
-                      }}
-                    >
-                      {userDetails.highest_role?.name || "No Role"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* 8. Online Status */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">8.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-1">
-                    Online Status
-                  </h4>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span
-                      className="w-3 h-3 rounded-full"
-                      style={{
-                        backgroundColor:
-                          userDetails.discord_details?.status === "online"
-                            ? "#23A559"
-                            : userDetails.discord_details?.status === "idle"
-                            ? "#F0B232"
-                            : userDetails.discord_details?.status === "dnd"
-                            ? "#F23F43"
-                            : "#80848E",
-                      }}
-                    />
-                    <p className="text-white text-sm font-medium">
-                      {userDetails.discord_details?.status === "online"
-                        ? "Online"
-                        : userDetails.discord_details?.status === "idle"
-                        ? "Idle"
-                        : userDetails.discord_details?.status === "dnd"
-                        ? "Do Not Disturb"
-                        : "Offline"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* 9. Activity */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">9.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-1">
-                    Activity (Game / App Name)
-                  </h4>
-                  {userDetails.discord_details?.activity_data ? (
-                    <div className="bg-black border border-steel rounded-lg p-3 mt-2">
-                      {/* Spotify/Listening Activity */}
-                      {userDetails.discord_details.activity_data.type ===
-                        "listening" && (
-                        <div className="flex gap-3">
-                          {userDetails.discord_details.activity_data
-                            .large_image && (
-                            <img
-                              src={
-                                userDetails.discord_details.activity_data
-                                  .large_image
-                              }
-                              alt="Album"
-                              className="w-16 h-16 rounded"
-                            />
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-gray-400 mb-1">
-                              Listening to Spotify
-                            </p>
-                            <p className="text-white font-semibold text-sm truncate">
-                              {userDetails.discord_details.activity_data.name}
-                            </p>
-                            <p className="text-gray-400 text-xs truncate">
-                              by{" "}
-                              {userDetails.discord_details.activity_data
-                                .details || "Unknown Artist"}
-                            </p>
-                            {userDetails.discord_details.activity_data
-                              .state && (
-                              <p className="text-gray-400 text-xs truncate">
-                                on{" "}
-                                {
-                                  userDetails.discord_details.activity_data
-                                    .state
-                                }
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )}
 
-                      {/* Game/Playing Activity */}
-                      {userDetails.discord_details.activity_data.type ===
-                        "playing" && (
-                        <div className="flex gap-3">
-                          {userDetails.discord_details.activity_data
-                            .large_image && (
-                            <img
-                              src={
-                                userDetails.discord_details.activity_data
-                                  .large_image
-                              }
-                              alt="Game"
-                              className="w-16 h-16 rounded"
-                            />
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-gray-400 mb-1">
-                              Playing
-                            </p>
-                            <p className="text-white font-semibold text-sm truncate">
-                              {userDetails.discord_details.activity_data.name}
-                            </p>
-                            {userDetails.discord_details.activity_data
-                              .details && (
-                              <p className="text-gray-400 text-xs truncate">
-                                {
-                                  userDetails.discord_details.activity_data
-                                    .details
-                                }
-                              </p>
-                            )}
-                            {userDetails.discord_details.activity_data
-                              .state && (
-                              <p className="text-gray-400 text-xs truncate">
-                                {
-                                  userDetails.discord_details.activity_data
-                                    .state
-                                }
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )}
+              <div className="flex flex-wrap gap-2">
+                {(() => {
+                  const roleNames =
+                    userDetails.guild_roles
+                      ?.filter((role) => !/^\d+$/.test(role))
+                      .reverse() || [];
 
-                      {/* Other Activities */}
-                      {(userDetails.discord_details.activity_data.type ===
-                        "streaming" ||
-                        userDetails.discord_details.activity_data.type ===
-                          "watching") && (
-                        <div>
-                          <p className="text-xs text-gray-400 mb-1">
-                            {userDetails.discord_details.activity_data.type ===
-                            "streaming"
-                              ? "Streaming"
-                              : "Watching"}
-                          </p>
-                          <p className="text-white font-semibold text-sm">
-                            {userDetails.discord_details.activity_data.name}
-                          </p>
-                          {userDetails.discord_details.activity_data
-                            .details && (
-                            <p className="text-gray-400 text-xs">
-                              {
-                                userDetails.discord_details.activity_data
-                                  .details
-                              }
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="text-white text-sm mb-1">No activity</p>
-                  )}
-                </div>
-              </div>
-            </div>
-            {/* 10. Join Date (Server Only) */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">10.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-1">
-                    Join Date (Server Only)
-                  </h4>
-                  <p className="text-white text-sm mb-1">
-                    {userDetails.discord_details?.joined_at
-                      ? new Date(
-                          userDetails.discord_details.joined_at
-                        ).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })
-                      : userDetails.joined_at
-                      ? new Date(userDetails.joined_at).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
-                        )
-                      : "Not available"}
-                  </p>
-                  {userDetails.discord_details?.joined_at && (
-                    <p className="text-gray-400 text-xs mb-1">
-                      {new Date(
-                        userDetails.discord_details.joined_at
-                      ).toLocaleTimeString()}
-                    </p>
-                  )}
+                  const getRoleColor = (roleName: string) => {
+                    const roleColor = userDetails.role_colors?.find(
+                      (rc) => rc.name === roleName
+                    );
+                    return roleColor?.color || "#99AAB5";
+                  };
 
-                  <div className="mt-2 pt-2 border-t border-steel">
-                    <p
-                      className={
-                        userDetails.discord_details?.premium_since
-                          ? "text-pink-400 text-sm"
-                          : "text-gray-400 text-sm"
-                      }
-                    >
-                      {userDetails.discord_details?.premium_since
-                        ? `🚀 Server Booster since ${new Date(
-                            userDetails.discord_details.premium_since
-                          ).toLocaleDateString()}`
-                        : "Not a server booster"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* 11. Discord Account Created */}
-            <div className="bg-black-deep border border-steel rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <span className="text-gold-light font-bold text-lg">11.</span>
-                <div className="flex-1">
-                  <h4 className="text-gold-light font-bold mb-1">
-                    Discord Account Created
-                  </h4>
-                  <p className="text-white text-sm mb-1">
-                    {userDetails.account_created_at
-                      ? new Date(
-                          userDetails.account_created_at
-                        ).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })
-                      : "Not available"}
-                  </p>
-                  {userDetails.account_created_at && (
-                    <>
-                      <p className="text-gray-400 text-xs mb-2">
-                        {new Date(
-                          userDetails.account_created_at
-                        ).toLocaleTimeString("en-US", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                        })}
-                      </p>
-                      <div className="mt-2 pt-2 border-t border-steel">
-                        <p className="text-gray-400 text-xs">
-                          Account Age:{" "}
-                          {(() => {
-                            const created = new Date(
-                              userDetails.account_created_at
-                            );
-                            const now = new Date();
-                            const diffTime = Math.abs(
-                              now.getTime() - created.getTime()
-                            );
-                            const diffDays = Math.ceil(
-                              diffTime / (1000 * 60 * 60 * 24)
-                            );
-                            const years = Math.floor(diffDays / 365);
-                            const months = Math.floor((diffDays % 365) / 30);
-                            const days = Math.floor((diffDays % 365) % 30);
+                  const getTextColor = (bgColor: string) => {
+                    const hex = bgColor.replace("#", "");
+                    const r = parseInt(hex.substr(0, 2), 16);
+                    const g = parseInt(hex.substr(2, 2), 16);
+                    const b = parseInt(hex.substr(4, 2), 16);
+                    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                    return luminance > 0.5 ? "#000000" : "#FFFFFF";
+                  };
 
-                            const parts = [];
-                            if (years > 0)
-                              parts.push(
-                                `${years} year${years !== 1 ? "s" : ""}`
-                              );
-                            if (months > 0)
-                              parts.push(
-                                `${months} month${months !== 1 ? "s" : ""}`
-                              );
-                            if (days > 0 || parts.length === 0)
-                              parts.push(`${days} day${days !== 1 ? "s" : ""}`);
-
-                            return parts.join(", ");
-                          })()}
-                        </p>
-                      </div>
-                    </>
-                  )}
-                </div>
+                  if (roleNames.length > 0) {
+                    return roleNames.map((role, index) => {
+                      const bgColor = getRoleColor(role);
+                      const textColor = getTextColor(bgColor);
+                      return (
+                        <span
+                          key={index}
+                          className="px-4 py-2 text-sm font-semibold rounded-lg border-2 shadow-lg transition-transform hover:scale-105"
+                          style={{
+                            backgroundColor: bgColor,
+                            color: textColor,
+                            borderColor: bgColor,
+                            boxShadow: `0 0 15px ${bgColor}40`,
+                          }}
+                        >
+                          {role}
+                        </span>
+                      );
+                    });
+                  } else {
+                    return (
+                      <span className="text-gray-400 text-sm py-4">
+                        No roles assigned
+                      </span>
+                    );
+                  }
+                })()}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Footer */}
-        <div className="p-6 border-t border-steel">
-          <button
-            onClick={onClose}
-            className="w-full px-4 py-2 bg-gradient-gold text-black-deep font-bold rounded-lg hover:opacity-90 transition-opacity"
-          >
-            Close
-          </button>
+          {/* Footer */}
+          <div className="px-8 pb-8">
+            <button
+              onClick={onClose}
+              className="w-full px-6 py-4 bg-gradient-to-r from-gold via-gold-light to-gold text-black-deep font-bold text-lg rounded-xl hover:shadow-2xl hover:shadow-gold/50 transition-all hover:scale-105"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>
