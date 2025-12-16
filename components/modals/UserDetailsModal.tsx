@@ -81,7 +81,7 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
       if (userId) {
         setIsLoading(true);
         // Fetch complete user details from API
-        fetch(`http://localhost:8000/users/${userId}`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
           credentials: "include",
         })
           .then((res) => res.json())
