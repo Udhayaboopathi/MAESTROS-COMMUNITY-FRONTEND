@@ -17,6 +17,7 @@ import {
   LogOut,
   User,
   Crown,
+  Shield,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { useDiscordStats } from "@/lib/hooks/useDiscordStats";
@@ -28,6 +29,7 @@ const navItems = [
   { name: "Apply", href: "/apply", icon: FileText },
   { name: "Games", href: "/games", icon: Gamepad2 },
   { name: "Events", href: "/events", icon: Calendar },
+  { name: "Rules", href: "/rules", icon: Shield },
   { name: "Team", href: "/team", icon: Users },
   { name: "Contact", href: "/contact", icon: Mail },
 ];

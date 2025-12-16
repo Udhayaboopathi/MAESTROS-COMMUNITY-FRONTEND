@@ -176,4 +176,13 @@
   .gold-divider {
     @apply h-px bg-gradient-to-r from-transparent via-gold to-transparent;
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

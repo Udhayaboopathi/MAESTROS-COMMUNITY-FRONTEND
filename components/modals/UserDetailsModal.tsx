@@ -14,6 +14,12 @@ interface UserDetails {
   xp?: number;
   badges?: string[];
   guild_roles?: string[];
+  role_colors?: Array<{ name: string; color: string }>;
+  highest_role?: {
+    name: string | null;
+    color: string;
+    priority: number;
+  };
   permissions?: {
     is_admin?: boolean;
     is_ceo?: boolean;
@@ -32,10 +38,24 @@ interface UserDetails {
     server_avatar?: string;
     joined_at?: string;
     premium_since?: string;
+    status?: string;
+    activity_data?: {
+      type: string;
+      name?: string;
+      details?: string;
+      state?: string;
+      large_image?: string;
+      small_image?: string;
+      url?: string;
+      start?: string;
+      end?: string;
+      duration?: number;
+    };
     pending?: boolean;
     communication_disabled_until?: string | null;
   };
   created_at?: string;
+  account_created_at?: string;
   joined_at?: string;
   last_seen?: string;
   last_login?: string;
@@ -95,7 +115,7 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
     return (
       <div
         className="fixed inset-0 flex items-center justify-center p-4"
-        style={{ zIndex: 999999 }}
+        style={{ zIndex: 10000000 }}
       >
         <div className="fixed inset-0 bg-black opacity-80" onClick={onClose} />
         <div className="relative bg-black-charcoal border-2 border-gold rounded-lg p-8 text-center">
@@ -122,7 +142,7 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
     <div
       className="fixed inset-0 flex items-center justify-center p-4 py-8 md:py-12"
       style={{
-        zIndex: 999999,
+        zIndex: 10000000,
         pointerEvents: "auto",
         paddingTop: "80px",
         paddingBottom: "80px",
@@ -140,7 +160,7 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
           bottom: 0,
           backgroundColor: "#000000",
           opacity: 1,
-          zIndex: 999998,
+          zIndex: 9999998,
           pointerEvents: "auto",
         }}
       />
@@ -149,7 +169,7 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
       <div
         className="relative w-full max-w-lg bg-black-charcoal border-2 border-gold rounded-lg shadow-2xl max-h-[calc(100vh-160px)] overflow-y-auto"
         style={{
-          zIndex: 999999,
+          zIndex: 9999999,
           pointerEvents: "auto",
         }}
         onClick={(e) => e.stopPropagation()}
@@ -220,9 +240,6 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                     <p className="text-white text-sm">
                       {userDetails.discord_details?.global_name || "Not set"}
                     </p>
-                    <p className="text-gray-500 text-xs mt-1">
-                      Shown in chat and member list
-                    </p>
                   </div>
                 </div>
               </div>
@@ -258,9 +275,6 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                       No custom avatar set
                     </p>
                   )}
-                  <p className="text-gray-500 text-xs mt-2">
-                    Global profile picture • Visible everywhere
-                  </p>
                 </div>
               </div>
             </div>
@@ -274,9 +288,6 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                   </h4>
                   <p className="text-white text-sm mb-1">
                     {userDetails.discord_details?.server_nickname || "Not set"}
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    Custom name in this server • Visible in this server only
                   </p>
                 </div>
               </div>
@@ -292,9 +303,6 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                   <p className="text-white text-sm mb-1">
                     {userDetails.discord_details?.server_avatar || "Not set"}
                   </p>
-                  <p className="text-gray-500 text-xs">
-                    Per-server profile picture • Visible in this server
-                  </p>
                 </div>
               </div>
             </div>
@@ -308,35 +316,49 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                   </h4>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {(() => {
-                      // Filter out role IDs (numeric strings) and keep only role names
+                      // Show all role names in Discord server order (highest first)
                       const roleNames =
-                        userDetails.guild_roles?.filter(
-                          (role) => !/^\d+$/.test(role)
-                        ) || [];
+                        userDetails.guild_roles
+                          ?.filter((role) => !/^\d+$/.test(role))
+                          .reverse() || [];
+
+                      const getRoleColor = (roleName: string) => {
+                        // Find the role color from role_colors array
+                        const roleColor = userDetails.role_colors?.find(
+                          (rc) => rc.name === roleName
+                        );
+                        return roleColor?.color || "#99AAB5";
+                      };
+
+                      const getTextColor = (bgColor: string) => {
+                        // Convert hex to RGB and calculate luminance
+                        const hex = bgColor.replace("#", "");
+                        const r = parseInt(hex.substr(0, 2), 16);
+                        const g = parseInt(hex.substr(2, 2), 16);
+                        const b = parseInt(hex.substr(4, 2), 16);
+                        const luminance =
+                          (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                        return luminance > 0.5 ? "#000000" : "#FFFFFF";
+                      };
 
                       if (roleNames.length > 0) {
-                        return roleNames.map((role, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1 bg-steel text-white text-sm font-medium rounded border border-gold-light"
-                          >
-                            {role}
-                          </span>
-                        ));
-                      } else if (
-                        userDetails.guild_roles &&
-                        userDetails.guild_roles.length > 0
-                      ) {
-                        // If all roles are IDs, show count but not the IDs
-                        return (
-                          <span className="text-white text-sm">
-                            {userDetails.guild_roles.length} role
-                            {userDetails.guild_roles.length !== 1
-                              ? "s"
-                              : ""}{" "}
-                            (names not available)
-                          </span>
-                        );
+                        return roleNames.map((role, index) => {
+                          const bgColor = getRoleColor(role);
+                          const textColor = getTextColor(bgColor);
+                          return (
+                            <span
+                              key={index}
+                              className="px-3 py-1 text-sm font-medium rounded border"
+                              style={{
+                                backgroundColor: bgColor,
+                                color: textColor,
+                                borderColor: bgColor,
+                              }}
+                            >
+                              {role}
+                            </span>
+                          );
+                        });
                       } else {
                         return (
                           <span className="text-gray-400 text-sm">
@@ -347,11 +369,22 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                     })()}
                   </div>
                   <p className="text-white text-sm mb-1">
-                    {userDetails.guild_roles?.length || 0} role
-                    {userDetails.guild_roles?.length !== 1 ? "s" : ""} assigned
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    Role names & display color • Visible via member list
+                    {(() => {
+                      const roleNames =
+                        userDetails.guild_roles?.filter(
+                          (role) => !/^\d+$/.test(role)
+                        ) || [];
+                      return roleNames.length;
+                    })()}{" "}
+                    role
+                    {(() => {
+                      const roleNames =
+                        userDetails.guild_roles?.filter(
+                          (role) => !/^\d+$/.test(role)
+                        ) || [];
+                      return roleNames.length !== 1 ? "s" : "";
+                    })()}{" "}
+                    assigned
                   </p>
                 </div>
               </div>
@@ -364,28 +397,33 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                   <h4 className="text-gold-light font-bold mb-1">
                     Highest Role Display
                   </h4>
-                  <p
-                    className={`text-sm mb-1 font-bold ${
-                      userDetails.permissions?.is_ceo
-                        ? "text-yellow-400"
-                        : userDetails.permissions?.is_manager
-                        ? "text-blue-400"
-                        : userDetails.permissions?.is_admin
-                        ? "text-red-400"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {userDetails.permissions?.is_ceo
-                      ? "CEO (Highest Role)"
-                      : userDetails.permissions?.is_manager
-                      ? "Manager (Highest Role)"
-                      : userDetails.permissions?.is_admin
-                      ? "Admin (Highest Role)"
-                      : "Member"}
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    Determines name color & position in member list
-                  </p>
+                  <div className="inline-block">
+                    <div
+                      className="px-2 py-1 rounded-lg font-bold text-lg shadow-lg animate-pulse"
+                      style={{
+                        background: `linear-gradient(135deg, ${
+                          userDetails.highest_role?.color || "#99AAB5"
+                        } 0%, ${
+                          userDetails.highest_role?.color || "#99AAB5"
+                        }dd 100%)`,
+                        color:
+                          userDetails.highest_role?.color === "#FFD700" ||
+                          userDetails.highest_role?.color === "#00FF00"
+                            ? "#000"
+                            : "#fff",
+                        boxShadow: `0 0 20px ${
+                          userDetails.highest_role?.color || "#99AAB5"
+                        }66, 0 0 40px ${
+                          userDetails.highest_role?.color || "#99AAB5"
+                        }33`,
+                        border: `2px solid ${
+                          userDetails.highest_role?.color || "#99AAB5"
+                        }`,
+                      }}
+                    >
+                      {userDetails.highest_role?.name || "No Role"}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -397,15 +435,30 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                   <h4 className="text-gold-light font-bold mb-1">
                     Online Status
                   </h4>
-                  <p className="text-white text-sm mb-1">
-                    {userDetails.last_seen
-                      ? "Recently Active"
-                      : "Status not available"}
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    Online / Idle / Do Not Disturb / Offline • User can hide
-                    offline status
-                  </p>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span
+                      className="w-3 h-3 rounded-full"
+                      style={{
+                        backgroundColor:
+                          userDetails.discord_details?.status === "online"
+                            ? "#23A559"
+                            : userDetails.discord_details?.status === "idle"
+                            ? "#F0B232"
+                            : userDetails.discord_details?.status === "dnd"
+                            ? "#F23F43"
+                            : "#80848E",
+                      }}
+                    />
+                    <p className="text-white text-sm font-medium">
+                      {userDetails.discord_details?.status === "online"
+                        ? "Online"
+                        : userDetails.discord_details?.status === "idle"
+                        ? "Idle"
+                        : userDetails.discord_details?.status === "dnd"
+                        ? "Do Not Disturb"
+                        : "Offline"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -417,13 +470,123 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                   <h4 className="text-gold-light font-bold mb-1">
                     Activity (Game / App Name)
                   </h4>
-                  <p className="text-white text-sm mb-1">
-                    Activity not available
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    Example: "Playing Minecraft" • Visible if user allows
-                    activity status
-                  </p>
+                  {userDetails.discord_details?.activity_data ? (
+                    <div className="bg-black border border-steel rounded-lg p-3 mt-2">
+                      {/* Spotify/Listening Activity */}
+                      {userDetails.discord_details.activity_data.type ===
+                        "listening" && (
+                        <div className="flex gap-3">
+                          {userDetails.discord_details.activity_data
+                            .large_image && (
+                            <img
+                              src={
+                                userDetails.discord_details.activity_data
+                                  .large_image
+                              }
+                              alt="Album"
+                              className="w-16 h-16 rounded"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs text-gray-400 mb-1">
+                              Listening to Spotify
+                            </p>
+                            <p className="text-white font-semibold text-sm truncate">
+                              {userDetails.discord_details.activity_data.name}
+                            </p>
+                            <p className="text-gray-400 text-xs truncate">
+                              by{" "}
+                              {userDetails.discord_details.activity_data
+                                .details || "Unknown Artist"}
+                            </p>
+                            {userDetails.discord_details.activity_data
+                              .state && (
+                              <p className="text-gray-400 text-xs truncate">
+                                on{" "}
+                                {
+                                  userDetails.discord_details.activity_data
+                                    .state
+                                }
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Game/Playing Activity */}
+                      {userDetails.discord_details.activity_data.type ===
+                        "playing" && (
+                        <div className="flex gap-3">
+                          {userDetails.discord_details.activity_data
+                            .large_image && (
+                            <img
+                              src={
+                                userDetails.discord_details.activity_data
+                                  .large_image
+                              }
+                              alt="Game"
+                              className="w-16 h-16 rounded"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs text-gray-400 mb-1">
+                              Playing
+                            </p>
+                            <p className="text-white font-semibold text-sm truncate">
+                              {userDetails.discord_details.activity_data.name}
+                            </p>
+                            {userDetails.discord_details.activity_data
+                              .details && (
+                              <p className="text-gray-400 text-xs truncate">
+                                {
+                                  userDetails.discord_details.activity_data
+                                    .details
+                                }
+                              </p>
+                            )}
+                            {userDetails.discord_details.activity_data
+                              .state && (
+                              <p className="text-gray-400 text-xs truncate">
+                                {
+                                  userDetails.discord_details.activity_data
+                                    .state
+                                }
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Other Activities */}
+                      {(userDetails.discord_details.activity_data.type ===
+                        "streaming" ||
+                        userDetails.discord_details.activity_data.type ===
+                          "watching") && (
+                        <div>
+                          <p className="text-xs text-gray-400 mb-1">
+                            {userDetails.discord_details.activity_data.type ===
+                            "streaming"
+                              ? "Streaming"
+                              : "Watching"}
+                          </p>
+                          <p className="text-white font-semibold text-sm">
+                            {userDetails.discord_details.activity_data.name}
+                          </p>
+                          {userDetails.discord_details.activity_data
+                            .details && (
+                            <p className="text-gray-400 text-xs">
+                              {
+                                userDetails.discord_details.activity_data
+                                  .details
+                              }
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-white text-sm mb-1">No activity</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -462,10 +625,7 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                       ).toLocaleTimeString()}
                     </p>
                   )}
-                  <p className="text-gray-500 text-xs">
-                    When the user joined this server • Visible to
-                    moderators/bots
-                  </p>
+
                   <div className="mt-2 pt-2 border-t border-steel">
                     <p
                       className={
@@ -481,6 +641,75 @@ function UserDetailsModal({ isOpen, onClose, user }: UserDetailsModalProps) {
                         : "Not a server booster"}
                     </p>
                   </div>
+                </div>
+              </div>
+            </div>
+            {/* 11. Discord Account Created */}
+            <div className="bg-black-deep border border-steel rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <span className="text-gold-light font-bold text-lg">11.</span>
+                <div className="flex-1">
+                  <h4 className="text-gold-light font-bold mb-1">
+                    Discord Account Created
+                  </h4>
+                  <p className="text-white text-sm mb-1">
+                    {userDetails.account_created_at
+                      ? new Date(
+                          userDetails.account_created_at
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      : "Not available"}
+                  </p>
+                  {userDetails.account_created_at && (
+                    <>
+                      <p className="text-gray-400 text-xs mb-2">
+                        {new Date(
+                          userDetails.account_created_at
+                        ).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })}
+                      </p>
+                      <div className="mt-2 pt-2 border-t border-steel">
+                        <p className="text-gray-400 text-xs">
+                          Account Age:{" "}
+                          {(() => {
+                            const created = new Date(
+                              userDetails.account_created_at
+                            );
+                            const now = new Date();
+                            const diffTime = Math.abs(
+                              now.getTime() - created.getTime()
+                            );
+                            const diffDays = Math.ceil(
+                              diffTime / (1000 * 60 * 60 * 24)
+                            );
+                            const years = Math.floor(diffDays / 365);
+                            const months = Math.floor((diffDays % 365) / 30);
+                            const days = Math.floor((diffDays % 365) % 30);
+
+                            const parts = [];
+                            if (years > 0)
+                              parts.push(
+                                `${years} year${years !== 1 ? "s" : ""}`
+                              );
+                            if (months > 0)
+                              parts.push(
+                                `${months} month${months !== 1 ? "s" : ""}`
+                              );
+                            if (days > 0 || parts.length === 0)
+                              parts.push(`${days} day${days !== 1 ? "s" : ""}`);
+
+                            return parts.join(", ");
+                          })()}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

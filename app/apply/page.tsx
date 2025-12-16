@@ -126,6 +126,9 @@ export default function ApplyPage() {
 
     setLoading(true);
     try {
+      // Log what we're sending for debugging
+      console.log("Submitting application data:", formData);
+
       // All validation and logic happens server-side
       const response = await api.post("/applications/submit", formData);
 
@@ -150,16 +153,19 @@ export default function ApplyPage() {
 
       router.push("/profile");
     } catch (error: any) {
+      console.error("Application submission error:", error.response?.data);
       const detail = error.response?.data?.detail;
 
       // Handle validation errors from server
       if (detail?.errors) {
-        const firstError = Object.values(detail.errors)[0];
-        toast.error(firstError as string);
+        const errorMessages = Object.entries(detail.errors)
+          .map(([field, msg]) => `${field}: ${msg}`)
+          .join(", ");
+        toast.error(`Validation errors: ${errorMessages}`);
       } else if (typeof detail === "string") {
         toast.error(detail);
       } else {
-        toast.error("Failed to submit application");
+        toast.error("Failed to submit application. Check console for details.");
       }
     } finally {
       setLoading(false);
