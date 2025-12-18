@@ -43,71 +43,114 @@ export default function Home() {
     // Show loading screen every time the home page loads
     setShowWelcome(true);
 
-    // Hide welcome screen after 5 seconds
+    // Hide welcome screen after 3 seconds
     const timer = setTimeout(() => {
       setShowWelcome(false);
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className="min-h-screen">
-      {/* Welcome Loading Screen */}
+      {/* Welcome Loading Screen - New 3s Animation Style */}
       <AnimatePresence mode="wait">
         {showWelcome && (
           <motion.div
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: [0.43, 0.13, 0.23, 0.96] }}
-            className="fixed inset-0 bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal flex items-center justify-center overflow-hidden"
+            exit={{ opacity: 0, scale: 1.1 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden"
             style={{ zIndex: 9999999 }}
           >
-            {/* Multiple animated background orbs */}
+            {/* Animated Grid Background */}
+            <div className="absolute inset-0 opacity-20">
+              <motion.div
+                animate={{
+                  backgroundPosition: ["0% 0%", "100% 100%"],
+                }}
+                transition={{
+                  duration: 3,
+                  ease: "linear",
+                }}
+                className="w-full h-full"
+                style={{
+                  backgroundImage: `linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px),
+                                   linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px)`,
+                  backgroundSize: "50px 50px",
+                }}
+              />
+            </div>
+
+            {/* Particle Effects */}
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{
+                  x: Math.random() * window.innerWidth,
+                  y: Math.random() * window.innerHeight,
+                  scale: 0,
+                  opacity: 0,
+                }}
+                animate={{
+                  y: [null, Math.random() * window.innerHeight],
+                  x: [null, Math.random() * window.innerWidth],
+                  scale: [0, Math.random() * 1.5 + 0.5, 0],
+                  opacity: [0, 0.8, 0],
+                }}
+                transition={{
+                  duration: 2.5,
+                  delay: Math.random() * 0.5,
+                  ease: "easeInOut",
+                }}
+                className="absolute w-2 h-2 bg-gold rounded-full blur-sm"
+              />
+            ))}
+
+            {/* Wave Effect Background */}
             <motion.div
               animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.2, 0.4, 0.2],
-                rotate: [0, 90, 0],
+                scale: [1, 2, 3],
+                opacity: [0.3, 0.2, 0],
               }}
               transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
+                duration: 2.5,
+                ease: "easeOut",
               }}
-              className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/20 rounded-full blur-3xl"
-            />
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <div className="w-96 h-96 rounded-full border-4 border-gold/30" />
+            </motion.div>
+
             <motion.div
               animate={{
-                scale: [1, 1.4, 1],
-                opacity: [0.15, 0.35, 0.15],
-                rotate: [0, -90, 0],
+                scale: [1, 2.5, 4],
+                opacity: [0.2, 0.15, 0],
               }}
               transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 0.5,
+                duration: 2.5,
+                delay: 0.3,
+                ease: "easeOut",
               }}
-              className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gold-light/20 rounded-full blur-3xl"
-            />
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <div className="w-96 h-96 rounded-full border-4 border-gold-light/20" />
+            </motion.div>
 
             <div className="relative z-10">
               <div className="text-center">
-                {/* Logo Animation with smooth entrance */}
+                {/* Logo with Circular Ring Animation */}
                 <motion.div
-                  initial={{ scale: 0, opacity: 0, rotateY: -180 }}
-                  animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+                  initial={{ scale: 0, rotate: -180, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
                   transition={{
-                    duration: 1,
-                    ease: [0.34, 1.56, 0.64, 1],
-                    delay: 0.1,
+                    duration: 0.8,
+                    ease: [0.68, -0.55, 0.265, 1.55],
                   }}
-                  className="mb-8 mx-auto w-44 h-44 relative"
-                  style={{ perspective: "1000px" }}
+                  className="mb-6 mx-auto w-32 h-32 relative"
                 >
-                  {/* Outer spinning ring with smooth rotation */}
+                  {/* Outer Spinning Ring */}
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{
@@ -118,31 +161,46 @@ export default function Home() {
                     className="absolute inset-0 rounded-full border-4 border-transparent border-t-gold border-r-gold"
                   />
 
-                  {/* Middle pulsing ring */}
+                  {/* Middle Ring - Counter Rotation */}
                   <motion.div
-                    animate={{
-                      scale: [1, 1.05, 1],
-                      opacity: [0.3, 0.6, 0.3],
-                    }}
+                    animate={{ rotate: -360 }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
-                      ease: "easeInOut",
+                      ease: "linear",
                     }}
-                    className="absolute inset-3 rounded-full border-2 border-gold/40"
+                    className="absolute inset-2 rounded-full border-3 border-transparent border-b-gold-light border-l-gold-light"
                   />
 
-                  {/* Logo in center with subtle float */}
+                  {/* Inner Pulsing Ring */}
                   <motion.div
                     animate={{
-                      y: [-2, 2, -2],
+                      scale: [1, 1.05, 1],
+                      opacity: [0.4, 0.7, 0.4],
                     }}
                     transition={{
-                      duration: 3,
+                      duration: 1.5,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                    className="absolute inset-0 flex items-center justify-center p-5"
+                    className="absolute inset-4 rounded-full border-2 border-gold/50"
+                  />
+
+                  {/* Logo with Glitch */}
+                  <motion.div
+                    animate={{
+                      filter: [
+                        "hue-rotate(0deg)",
+                        "hue-rotate(10deg)",
+                        "hue-rotate(0deg)",
+                      ],
+                    }}
+                    transition={{
+                      duration: 0.3,
+                      repeat: 3,
+                      repeatDelay: 0.5,
+                    }}
+                    className="absolute inset-0 flex items-center justify-center p-6"
                   >
                     <img
                       src="/logo.png"
@@ -151,185 +209,128 @@ export default function Home() {
                     />
                   </motion.div>
 
-                  {/* Inner rotating ring - counter direction */}
-                  <motion.div
-                    animate={{ rotate: -360 }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    className="absolute inset-6 rounded-full border-2 border-transparent border-b-gold-light border-l-gold-light"
-                  />
-
-                  {/* Glow effect */}
+                  {/* Glow Pulse */}
                   <motion.div
                     animate={{
-                      scale: [1, 1.2, 1],
-                      opacity: [0.3, 0.6, 0.3],
+                      scale: [1, 1.3, 1],
+                      opacity: [0.5, 0.8, 0.5],
                     }}
                     transition={{
-                      duration: 2.5,
+                      duration: 1.5,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-gold/20 to-gold-light/20 blur-xl"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-gold/30 to-gold-light/30 blur-2xl"
                   />
                 </motion.div>
 
-                {/* Welcome Text with staggered entrance */}
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay: 0.6,
-                    duration: 0.8,
-                    ease: [0.25, 0.46, 0.45, 0.94],
-                  }}
-                >
-                  <motion.h1
-                    animate={{
-                      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    className="text-5xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent"
-                    style={{ backgroundSize: "200% auto" }}
-                  >
-                    Welcome to Maestros Community
-                  </motion.h1>
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.9, duration: 0.6 }}
-                    className="text-gray-400 text-lg mb-8"
-                  >
-                    Where Champions Rise
-                  </motion.p>
-                </motion.div>
-
-                {/* Floating Icons with smooth animations */}
-                <div className="relative h-20 mb-8">
-                  <motion.div
-                    initial={{ opacity: 0, x: -80, scale: 0 }}
-                    animate={{
-                      opacity: 1,
-                      x: 0,
-                      scale: 1,
-                      y: [0, -8, 0],
-                    }}
-                    transition={{
-                      opacity: { delay: 1, duration: 0.6 },
-                      x: { delay: 1, duration: 0.6, ease: "easeOut" },
-                      scale: { delay: 1, duration: 0.6, ease: "backOut" },
-                      y: {
-                        delay: 1.6,
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      },
-                    }}
-                    className="absolute left-0 top-0"
-                  >
-                    <Sparkles className="w-8 h-8 text-gold-light drop-shadow-lg" />
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, x: 80, scale: 0 }}
-                    animate={{
-                      opacity: 1,
-                      x: 0,
-                      scale: 1,
-                      y: [0, -8, 0],
-                    }}
-                    transition={{
-                      opacity: { delay: 1.1, duration: 0.6 },
-                      x: { delay: 1.1, duration: 0.6, ease: "easeOut" },
-                      scale: { delay: 1.1, duration: 0.6, ease: "backOut" },
-                      y: {
-                        delay: 1.7,
-                        duration: 2.2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      },
-                    }}
-                    className="absolute right-0 top-0"
-                  >
-                    <Users className="w-8 h-8 text-gold-light drop-shadow-lg" />
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 40, scale: 0 }}
-                    animate={{
-                      opacity: 1,
-                      y: [0, -10, 0],
-                      scale: 1,
-                    }}
-                    transition={{
-                      opacity: { delay: 1.2, duration: 0.6 },
-                      y: {
-                        delay: 1.8,
-                        duration: 2.4,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      },
-                      scale: { delay: 1.2, duration: 0.6, ease: "backOut" },
-                    }}
-                    className="absolute left-1/2 -translate-x-1/2 top-10"
-                  >
-                    <Zap className="w-8 h-8 text-gold drop-shadow-lg" />
-                  </motion.div>
-                </div>
-
-                {/* Enhanced Loading Bar */}
+                {/* Text with Typewriter & Glitch Effect */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.4, duration: 0.6, ease: "easeOut" }}
-                  className="w-72 mx-auto"
+                  transition={{
+                    delay: 0.4,
+                    duration: 0.6,
+                  }}
                 >
-                  <div className="relative h-2 bg-black-deep/50 rounded-full overflow-hidden backdrop-blur-sm border border-gold/20">
-                    <motion.div
-                      initial={{ width: "0%", opacity: 0 }}
-                      animate={{ width: "100%", opacity: 1 }}
-                      transition={{
-                        width: {
-                          duration: 4.5, // ⏱️ total loading time
-                          ease: "easeInOut",
-                        },
-                        opacity: {
-                          duration: 0.6,
-                        },
+                  <motion.h1
+                    className="text-4xl sm:text-5xl font-bold mb-3 relative"
+                  >
+                    <motion.span
+                      animate={{
+                        backgroundPosition: ["0% 50%", "100% 50%"],
                       }}
-                      className="h-full relative overflow-hidden"
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                      className="bg-gradient-to-r from-gold via-white to-gold-light bg-clip-text text-transparent"
+                      style={{ backgroundSize: "200% auto" }}
                     >
-                      {/* Base gradient bar */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-gold via-gold-light to-gold" />
+                      MAESTROS COMMUNITY
+                    </motion.span>
+                    
+                    {/* Glitch overlay */}
+                    <motion.span
+                      animate={{
+                        opacity: [0, 0.7, 0],
+                        x: [0, -2, 2, 0],
+                      }}
+                      transition={{
+                        duration: 0.2,
+                        repeat: 2,
+                        repeatDelay: 0.8,
+                      }}
+                      className="absolute inset-0 bg-gradient-to-r from-gold via-white to-gold-light bg-clip-text text-transparent"
+                      style={{
+                        backgroundSize: "200% auto",
+                        textShadow: "2px 0 #ff00de, -2px 0 #00fff9",
+                      }}
+                    >
+                      MAESTROS COMMUNITY
+                    </motion.span>
+                  </motion.h1>
+                  
+                  <motion.p
+                    initial={{ opacity: 0, letterSpacing: "0.5em" }}
+                    animate={{ opacity: 1, letterSpacing: "0.2em" }}
+                    transition={{ delay: 0.8, duration: 0.8 }}
+                    className="text-gold-light text-sm font-semibold tracking-widest"
+                  >
+                    WHERE CHAMPIONS RISE
+                  </motion.p>
+                </motion.div>
 
-                      {/* Shimmer effect */}
+                {/* Cyber Loading Bar */}
+                <motion.div
+                  initial={{ opacity: 0, scaleX: 0 }}
+                  animate={{ opacity: 1, scaleX: 1 }}
+                  transition={{ delay: 1, duration: 0.5 }}
+                  className="w-64 mx-auto mt-8"
+                >
+                  <div className="relative h-1 bg-black-charcoal/50 rounded-full overflow-hidden border border-gold/30">
+                    <motion.div
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{
+                        duration: 2,
+                        ease: "easeInOut",
+                      }}
+                      className="h-full relative"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-gold via-gold-light to-gold" />
+                      
+                      {/* Scanning effect */}
                       <motion.div
-                        initial={{ x: "-100%" }}
-                        animate={{ x: "200%" }}
+                        animate={{
+                          x: ["-100%", "200%"],
+                        }}
                         transition={{
-                          duration: 1.2, // shimmer speed
+                          duration: 1,
                           repeat: Infinity,
                           ease: "linear",
                         }}
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                        className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white to-transparent opacity-60"
                       />
                     </motion.div>
                   </div>
-                  <motion.p
+                  
+                  {/* Loading percentage */}
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 1.6, duration: 0.6 }}
-                    className="text-xs text-gray-500 text-center mt-3"
+                    transition={{ delay: 1.2 }}
+                    className="flex justify-between mt-2 text-xs text-gold/60 font-mono"
                   >
-                    Loading experience...
-                  </motion.p>
+                    <span>INITIALIZING</span>
+                    <motion.span
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    >
+                      ///
+                    </motion.span>
+                  </motion.div>
                 </motion.div>
               </div>
             </div>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import api from "@/lib/api";
+import LoadingScreen from "@/components/common/LoadingScreen";
 import {
   FileText,
   Gamepad2,
@@ -38,7 +39,7 @@ export default function ManagerPanel() {
   if (isLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gold-light">Loading...</div>
+        <LoadingScreen message="Loading Manager Panel..." fullScreen={false} />
       </div>
     );
   }

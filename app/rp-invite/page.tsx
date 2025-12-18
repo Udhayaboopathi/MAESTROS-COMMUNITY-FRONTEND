@@ -1,11 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Gamepad2, Send, ArrowLeft } from "lucide-react";
+import { Gamepad2, Send, ArrowLeft, LogIn } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/lib/contexts/AuthContext";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 export default function RpInvitePage() {
+  const { user, isLoading, login } = useAuth();
   const [rpFormData, setRpFormData] = useState({
     serverName: "",
     ownerName: "",
@@ -85,8 +88,6 @@ export default function RpInvitePage() {
       </div>
 
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-        {/* Back Button */}
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -116,50 +117,102 @@ export default function RpInvitePage() {
           </p>
         </motion.div>
 
-        {/* Benefits Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="grid md:grid-cols-3 gap-4 mb-12"
-        >
-          {[
-            {
-              title: "Increased Visibility",
-              description: "Reach thousands of active players",
-              icon: "🌟",
-            },
-            {
-              title: "Community Support",
-              description: "Get featured in our Discord server",
-              icon: "🤝",
-            },
-            {
-              title: "Promotional Help",
-              description: "Professional showcase & promotion",
-              icon: "📢",
-            },
-          ].map((benefit, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ y: -5 }}
-              className="bg-black-charcoal/50 backdrop-blur-sm rounded-xl p-6 border border-gold/10 hover:border-gold/40 transition-all"
-            >
-              <div className="text-4xl mb-3">{benefit.icon}</div>
-              <h3 className="text-white font-bold text-lg mb-2">
-                {benefit.title}
-              </h3>
-              <p className="text-gray-400 text-sm">{benefit.description}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Loading State */}
+        {isLoading ? (
+          <LoadingScreen message="Verifying authentication..." />
+        ) : !user ? (
+          /* Login Required Message */
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-2xl mx-auto"
+          >
+            <div className="bg-black-charcoal/70 backdrop-blur-md rounded-2xl border border-gold/20 overflow-hidden">
+              <div className="bg-gradient-to-r from-gold/20 via-gold-light/10 to-transparent px-8 py-6 border-b border-gold/20">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-gold flex items-center justify-center">
+                    <LogIn className="w-7 h-7 text-black-deep" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">
+                      Login Required
+                    </h2>
+                    <p className="text-gray-400 text-sm">
+                      Please login to submit a partnership request
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-8 text-center">
+                <p className="text-gray-300 mb-6 leading-relaxed">
+                  To submit your RP server for partnership, you need to be logged in with your Discord account. This helps us verify your identity and contact you about your application.
+                </p>
+                
+                <button
+                  onClick={login}
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-gold text-black-deep font-bold text-base rounded-lg hover:shadow-lg hover:shadow-gold/30 transition-all group"
+                >
+                  <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  Login with Discord
+                </button>
 
-        {/* RP Server Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+                <div className="mt-8 pt-6 border-t border-gold/10">
+                  <p className="text-gray-500 text-sm">
+                    By logging in, you'll be able to submit partnership requests and track their status
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          /* Authenticated User - Show Form */
+          <>
+            {/* Benefits Cards */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="grid md:grid-cols-3 gap-4 mb-12"
+            >
+              {[
+                {
+                  title: "Increased Visibility",
+                  description: "Reach thousands of active players",
+                  icon: "🌟",
+                },
+                {
+                  title: "Community Support",
+                  description: "Get featured in our Discord server",
+                  icon: "🤝",
+                },
+                {
+                  title: "Promotional Help",
+                  description: "Professional showcase & promotion",
+                  icon: "📢",
+                },
+              ].map((benefit, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ y: -5 }}
+                  className="bg-black-charcoal/50 backdrop-blur-sm rounded-xl p-6 border border-gold/10 hover:border-gold/40 transition-all"
+                >
+                  <div className="text-4xl mb-3">{benefit.icon}</div>
+                  <h3 className="text-white font-bold text-lg mb-2">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm">{benefit.description}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+
+            {/* RP Server Form */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
           <div className="bg-black-charcoal/70 backdrop-blur-md rounded-2xl border border-gold/20 overflow-hidden">
             {/* Header Section */}
             <div className="bg-gradient-to-r from-gold/20 via-gold-light/10 to-transparent px-8 py-6 border-b border-gold/20">
@@ -365,13 +418,13 @@ export default function RpInvitePage() {
           </div>
         </motion.div>
 
-        {/* Info Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 bg-gradient-to-br from-gold/5 to-transparent rounded-2xl p-6 border border-gold/20"
-        >
+            {/* Info Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-8 bg-gradient-to-br from-gold/5 to-transparent rounded-2xl p-6 border border-gold/20"
+            >
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
               <span className="text-gold text-lg">ℹ️</span>
@@ -390,8 +443,10 @@ export default function RpInvitePage() {
                 </li>
               </ul>
             </div>
-          </div>
-        </motion.div>
+              </div>
+            </motion.div>
+          </>
+        )}
       </div>
     </div>
   );

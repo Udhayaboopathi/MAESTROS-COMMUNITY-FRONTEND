@@ -30,7 +30,7 @@ const navItems = [
   { name: "Games", href: "/games", icon: Gamepad2 },
   { name: "Rules", href: "/rules", icon: Shield },
   { name: "Team", href: "/team", icon: Users },
-  { name: "RP Invitation", href: "/rp-invite", icon: Gamepad2 },
+  { name: "Server Invitation", href: "/rp-invite", icon: Gamepad2 },
   { name: "Contact", href: "/contact", icon: Mail },
 ];
 
