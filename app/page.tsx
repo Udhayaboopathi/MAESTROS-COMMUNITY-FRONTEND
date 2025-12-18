@@ -84,29 +84,35 @@ export default function Home() {
             </div>
 
             {/* Particle Effects */}
-            {[...Array(20)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{
-                  x: Math.random() * window.innerWidth,
-                  y: Math.random() * window.innerHeight,
-                  scale: 0,
-                  opacity: 0,
-                }}
-                animate={{
-                  y: [null, Math.random() * window.innerHeight],
-                  x: [null, Math.random() * window.innerWidth],
-                  scale: [0, Math.random() * 1.5 + 0.5, 0],
-                  opacity: [0, 0.8, 0],
-                }}
-                transition={{
-                  duration: 2.5,
-                  delay: Math.random() * 0.5,
-                  ease: "easeInOut",
-                }}
-                className="absolute w-2 h-2 bg-gold rounded-full blur-sm"
-              />
-            ))}
+            {[...Array(20)].map((_, i) => {
+              // Safe window access for SSR
+              const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+              const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 1080;
+              
+              return (
+                <motion.div
+                  key={i}
+                  initial={{
+                    x: Math.random() * windowWidth,
+                    y: Math.random() * windowHeight,
+                    scale: 0,
+                    opacity: 0,
+                  }}
+                  animate={{
+                    y: [null, Math.random() * windowHeight],
+                    x: [null, Math.random() * windowWidth],
+                    scale: [0, Math.random() * 1.5 + 0.5, 0],
+                    opacity: [0, 0.8, 0],
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    delay: Math.random() * 0.5,
+                    ease: "easeInOut",
+                  }}
+                  className="absolute w-2 h-2 bg-gold rounded-full blur-sm"
+                />
+              );
+            })}
 
             {/* Wave Effect Background */}
             <motion.div
