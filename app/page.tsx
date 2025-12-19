@@ -37,19 +37,28 @@ function AuthHandler() {
 }
 
 export default function Home() {
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
-    // Show loading screen every time the home page loads
-    setShowWelcome(true);
+    // Show loading screen only on first visit (per session)
+    const hasSeenWelcome = sessionStorage.getItem("hasSeenWelcome");
 
-    // Hide welcome screen after 3 seconds
-    const timer = setTimeout(() => {
-      setShowWelcome(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
+    if (!hasSeenWelcome) {
+      setShowWelcome(true);
+      sessionStorage.setItem("hasSeenWelcome", "true");
+    }
   }, []);
+
+  useEffect(() => {
+    if (showWelcome) {
+      // Hide welcome screen after 3 seconds
+      const timer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showWelcome]);
 
   return (
     <div className="min-h-screen">
@@ -86,9 +95,11 @@ export default function Home() {
             {/* Particle Effects */}
             {[...Array(20)].map((_, i) => {
               // Safe window access for SSR
-              const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
-              const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 1080;
-              
+              const windowWidth =
+                typeof window !== "undefined" ? window.innerWidth : 1920;
+              const windowHeight =
+                typeof window !== "undefined" ? window.innerHeight : 1080;
+
               return (
                 <motion.div
                   key={i}
@@ -154,7 +165,7 @@ export default function Home() {
                     duration: 0.8,
                     ease: [0.68, -0.55, 0.265, 1.55],
                   }}
-                  className="mb-6 mx-auto w-32 h-32 relative"
+                  className="mb-6 mx-auto w-56 h-56 relative"
                 >
                   {/* Outer Spinning Ring */}
                   <motion.div
@@ -239,9 +250,7 @@ export default function Home() {
                     duration: 0.6,
                   }}
                 >
-                  <motion.h1
-                    className="text-4xl sm:text-5xl font-bold mb-3 relative"
-                  >
+                  <motion.h1 className="text-4xl sm:text-5xl font-bold mb-3 relative">
                     <motion.span
                       animate={{
                         backgroundPosition: ["0% 50%", "100% 50%"],
@@ -256,7 +265,7 @@ export default function Home() {
                     >
                       MAESTROS COMMUNITY
                     </motion.span>
-                    
+
                     {/* Glitch overlay */}
                     <motion.span
                       animate={{
@@ -277,7 +286,7 @@ export default function Home() {
                       MAESTROS COMMUNITY
                     </motion.span>
                   </motion.h1>
-                  
+
                   <motion.p
                     initial={{ opacity: 0, letterSpacing: "0.5em" }}
                     animate={{ opacity: 1, letterSpacing: "0.2em" }}
@@ -306,7 +315,7 @@ export default function Home() {
                       className="h-full relative"
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-gold via-gold-light to-gold" />
-                      
+
                       {/* Scanning effect */}
                       <motion.div
                         animate={{
@@ -321,7 +330,7 @@ export default function Home() {
                       />
                     </motion.div>
                   </div>
-                  
+
                   {/* Loading percentage */}
                   <motion.div
                     initial={{ opacity: 0 }}

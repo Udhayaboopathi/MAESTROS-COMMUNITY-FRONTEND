@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import UserDetailsModal from "@/components/modals/UserDetailsModal";
 import LoadingScreen from "@/components/common/LoadingScreen";
+import { Crown, Shield, ShieldCheck } from "lucide-react";
 
 export default function Dashboard() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, refreshUser } = useAuth();
   const router = useRouter();
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
@@ -17,6 +18,13 @@ export default function Dashboard() {
       router.push("/");
     }
   }, [user, isLoading, router]);
+
+  // Refresh user data when dashboard loads to get latest permissions
+  useEffect(() => {
+    if (user) {
+      refreshUser();
+    }
+  }, []);
 
   if (isLoading) {
     return (
@@ -66,19 +74,26 @@ export default function Dashboard() {
                 Level {user.level} • {user.xp} XP
               </p>
               {permissions.is_ceo && (
-                <span className="inline-block mt-2 px-3 py-1 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black text-sm font-bold rounded">
-                  CEO
-                </span>
+                <div className="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-gradient-gold/10 border border-gold/30 rounded-lg">
+                  <Crown className="w-4 h-4 text-gold" />
+                  <span className="text-sm font-bold text-gold-light">CEO</span>
+                </div>
               )}
               {permissions.is_manager && !permissions.is_ceo && (
-                <span className="inline-block mt-2 px-3 py-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold rounded">
-                  MANAGER
-                </span>
+                <div className="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-gradient-gold/10 border border-gold/30 rounded-lg">
+                  <Shield className="w-4 h-4 text-gold" />
+                  <span className="text-sm font-bold text-gold-light">
+                    MANAGER
+                  </span>
+                </div>
               )}
               {permissions.is_admin && (
-                <span className="inline-block mt-2 ml-2 px-3 py-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold rounded">
-                  ADMIN
-                </span>
+                <div className="inline-flex items-center gap-2 mt-2 ml-2 px-4 py-2 bg-gradient-gold/10 border border-gold/30 rounded-lg">
+                  <ShieldCheck className="w-4 h-4 text-gold" />
+                  <span className="text-sm font-bold text-gold-light">
+                    ADMIN
+                  </span>
+                </div>
               )}
             </div>
           </div>

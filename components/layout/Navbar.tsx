@@ -23,17 +23,6 @@ import { useAuth } from "@/lib/contexts/AuthContext";
 import { useDiscordStats } from "@/lib/hooks/useDiscordStats";
 import UserDetailsModal from "@/components/modals/UserDetailsModal";
 
-const navItems = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "About", href: "/about", icon: Info },
-  { name: "Apply", href: "/apply", icon: FileText },
-  { name: "Games", href: "/games", icon: Gamepad2 },
-  { name: "Rules", href: "/rules", icon: Shield },
-  { name: "Team", href: "/team", icon: Users },
-  { name: "Server Invitation", href: "/rp-invite", icon: Gamepad2 },
-  { name: "Contact", href: "/contact", icon: Mail },
-];
-
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -42,6 +31,20 @@ export default function Navbar() {
   const { stats, loading: statsLoading } = useDiscordStats();
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+
+  // Check if user has the MEMBER role (logic performed in backend)
+  const showApply = !user?.has_member_role;
+
+  const navItems = [
+    { name: "Home", href: "/", icon: Home },
+    { name: "About", href: "/about", icon: Info },
+    ...(showApply ? [{ name: "Apply", href: "/apply", icon: FileText }] : []),
+    { name: "Games", href: "/games", icon: Gamepad2 },
+    { name: "Rules", href: "/rules", icon: Shield },
+    { name: "Team", href: "/team", icon: Users },
+    { name: "Server Invitation", href: "/rp-invite", icon: Gamepad2 },
+    { name: "Contact", href: "/contact", icon: Mail },
+  ];
 
   const handleUserClick = (clickedUser: any) => {
     setSelectedUser(clickedUser);

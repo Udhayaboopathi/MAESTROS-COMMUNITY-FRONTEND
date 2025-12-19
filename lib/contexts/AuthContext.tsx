@@ -24,6 +24,8 @@ interface User {
   badges: string[];
   joined_at: string;
   last_login: string;
+  is_member?: boolean;
+  has_member_role?: boolean;
   permissions?: {
     is_admin: boolean;
     is_ceo: boolean;
@@ -70,11 +72,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const token = localStorage.getItem("auth_token");
       if (token) {
         const response = await api.get("/auth/me");
+        // Ensure permissions object exists, even if empty
+        if (response.data && !response.data.permissions) {
+          response.data.permissions = {
+            is_admin: false,
+            is_ceo: false,
+            is_manager: false,
+            can_manage_applications: false,
+          };
+        }
         setUser(response.data);
       }
     } catch (error) {
       console.error("Auth check failed:", error);
       localStorage.removeItem("auth_token");
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
@@ -101,6 +113,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshUser = async () => {
     try {
       const response = await api.get("/auth/me");
+      // Ensure permissions object exists, even if empty
+      if (response.data && !response.data.permissions) {
+        response.data.permissions = {
+          is_admin: false,
+          is_ceo: false,
+          is_manager: false,
+          can_manage_applications: false,
+        };
+      }
       setUser(response.data);
     } catch (error) {
       console.error("Failed to refresh user:", error);
