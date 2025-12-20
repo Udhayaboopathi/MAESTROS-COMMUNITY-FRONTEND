@@ -143,12 +143,14 @@ export default function RpInvitePage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="p-8 text-center">
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  To submit your RP server for partnership, you need to be logged in with your Discord account. This helps us verify your identity and contact you about your application.
+                  To submit your RP server for partnership, you need to be
+                  logged in with your Discord account. This helps us verify your
+                  identity and contact you about your application.
                 </p>
-                
+
                 <button
                   onClick={login}
                   className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-gold text-black-deep font-bold text-base rounded-lg hover:shadow-lg hover:shadow-gold/30 transition-all group"
@@ -159,7 +161,8 @@ export default function RpInvitePage() {
 
                 <div className="mt-8 pt-6 border-t border-gold/10">
                   <p className="text-gray-500 text-sm">
-                    By logging in, you'll be able to submit partnership requests and track their status
+                    By logging in, you'll be able to submit partnership requests
+                    and track their status
                   </p>
                 </div>
               </div>
@@ -206,217 +209,215 @@ export default function RpInvitePage() {
               ))}
             </motion.div>
 
-
             {/* RP Server Form */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-          <div className="bg-black-charcoal/70 backdrop-blur-md rounded-2xl border border-gold/20 overflow-hidden">
-            {/* Header Section */}
-            <div className="bg-gradient-to-r from-gold/20 via-gold-light/10 to-transparent px-8 py-6 border-b border-gold/20">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-xl bg-gradient-gold flex items-center justify-center">
-                  <Gamepad2 className="w-7 h-7 text-black-deep" />
+              <div className="bg-black-charcoal/70 backdrop-blur-md rounded-2xl border border-gold/20 overflow-hidden">
+                {/* Header Section */}
+                <div className="bg-gradient-to-r from-gold/20 via-gold-light/10 to-transparent px-8 py-6 border-b border-gold/20">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-gold flex items-center justify-center">
+                      <Gamepad2 className="w-7 h-7 text-black-deep" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">
+                        Submit Your Server
+                      </h2>
+                      <p className="text-gray-400 text-sm">
+                        Fill out the form below to get your server featured
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-white">
-                    Submit Your Server
-                  </h2>
-                  <p className="text-gray-400 text-sm">
-                    Fill out the form below to get your server featured
-                  </p>
+
+                {/* Form Content */}
+                <div className="p-8">
+                  <form onSubmit={handleRpSubmit} className="space-y-5">
+                    <div className="grid md:grid-cols-2 gap-5">
+                      {/* Server Name */}
+                      <div>
+                        <label
+                          htmlFor="serverName"
+                          className="block text-sm font-semibold text-gold-light mb-2"
+                        >
+                          Server Name *
+                        </label>
+                        <input
+                          type="text"
+                          id="serverName"
+                          name="serverName"
+                          value={rpFormData.serverName}
+                          onChange={handleRpChange}
+                          required
+                          className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                          placeholder="My RP Server"
+                        />
+                      </div>
+
+                      {/* Owner Name */}
+                      <div>
+                        <label
+                          htmlFor="ownerName"
+                          className="block text-sm font-semibold text-gold-light mb-2"
+                        >
+                          Owner Name *
+                        </label>
+                        <input
+                          type="text"
+                          id="ownerName"
+                          name="ownerName"
+                          value={rpFormData.ownerName}
+                          onChange={handleRpChange}
+                          required
+                          className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                          placeholder="John Doe"
+                        />
+                      </div>
+
+                      {/* Discord Link */}
+                      <div>
+                        <label
+                          htmlFor="discordId"
+                          className="block text-sm font-semibold text-gold-light mb-2"
+                        >
+                          Discord link
+                        </label>
+                        <input
+                          type="text"
+                          id="discordId"
+                          name="discordId"
+                          value={rpFormData.discordId}
+                          onChange={handleRpChange}
+                          className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                          placeholder="https://discord.gg/your-invite"
+                        />
+                      </div>
+
+                      {/* Player Count */}
+                      <div>
+                        <label
+                          htmlFor="playerCount"
+                          className="block text-sm font-semibold text-gold-light mb-2"
+                        >
+                          Player Count
+                        </label>
+                        <input
+                          type="text"
+                          id="playerCount"
+                          name="playerCount"
+                          value={rpFormData.playerCount}
+                          onChange={handleRpChange}
+                          className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                          placeholder="32/64"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Server IP */}
+                    <div>
+                      <label
+                        htmlFor="serverIP"
+                        className="block text-sm font-semibold text-gold-light mb-2"
+                      >
+                        Server IP/Connect Link
+                      </label>
+                      <input
+                        type="text"
+                        id="serverIP"
+                        name="serverIP"
+                        value={rpFormData.serverIP}
+                        onChange={handleRpChange}
+                        className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
+                        placeholder="connect cfx.re/join/abc123"
+                      />
+                    </div>
+
+                    {/* Server Description */}
+                    <div>
+                      <label
+                        htmlFor="serverDescription"
+                        className="block text-sm font-semibold text-gold-light mb-2"
+                      >
+                        Server Description *
+                      </label>
+                      <textarea
+                        id="serverDescription"
+                        name="serverDescription"
+                        value={rpFormData.serverDescription}
+                        onChange={handleRpChange}
+                        required
+                        rows={4}
+                        className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none"
+                        placeholder="Tell us about your server..."
+                      />
+                    </div>
+
+                    {/* Additional Info */}
+                    <div>
+                      <label
+                        htmlFor="additionalInfo"
+                        className="block text-sm font-semibold text-gold-light mb-2"
+                      >
+                        Additional Information
+                      </label>
+                      <textarea
+                        id="additionalInfo"
+                        name="additionalInfo"
+                        value={rpFormData.additionalInfo}
+                        onChange={handleRpChange}
+                        rows={3}
+                        className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none"
+                        placeholder="Anything else we should know..."
+                      />
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                      type="submit"
+                      disabled={isRpSubmitting}
+                      className="w-full px-6 py-4 bg-gradient-gold text-black-deep font-bold text-base rounded-lg hover:shadow-lg hover:shadow-gold/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
+                    >
+                      {isRpSubmitting ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-black-deep border-t-transparent rounded-full animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          Submit Partnership Request
+                          <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
+                    </button>
+
+                    {/* Success Message */}
+                    {rpSubmitStatus === "success" && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-300 text-center font-medium"
+                      >
+                        ✓ Request submitted! We'll review and contact you soon.
+                      </motion.div>
+                    )}
+
+                    {/* Error Message */}
+                    {rpSubmitStatus === "error" && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 text-center font-medium"
+                      >
+                        ✕ Failed to submit. Please try again later.
+                      </motion.div>
+                    )}
+                  </form>
                 </div>
               </div>
-            </div>
-
-            {/* Form Content */}
-            <div className="p-8">
-              <form onSubmit={handleRpSubmit} className="space-y-5">
-                <div className="grid md:grid-cols-2 gap-5">
-                  {/* Server Name */}
-                  <div>
-                    <label
-                      htmlFor="serverName"
-                      className="block text-sm font-semibold text-gold-light mb-2"
-                    >
-                      Server Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="serverName"
-                      name="serverName"
-                      value={rpFormData.serverName}
-                      onChange={handleRpChange}
-                      required
-                      className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
-                      placeholder="My RP Server"
-                    />
-                  </div>
-
-                  {/* Owner Name */}
-                  <div>
-                    <label
-                      htmlFor="ownerName"
-                      className="block text-sm font-semibold text-gold-light mb-2"
-                    >
-                      Owner Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="ownerName"
-                      name="ownerName"
-                      value={rpFormData.ownerName}
-                      onChange={handleRpChange}
-                      required
-                      className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
-                      placeholder="John Doe"
-                    />
-                  </div>
-
-                  {/* Discord ID */}
-                  <div>
-                    <label
-                      htmlFor="discordId"
-                      className="block text-sm font-semibold text-gold-light mb-2"
-                    >
-                      Discord ID *
-                    </label>
-                    <input
-                      type="text"
-                      id="discordId"
-                      name="discordId"
-                      value={rpFormData.discordId}
-                      onChange={handleRpChange}
-                      required
-                      className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
-                      placeholder="123456789012345678"
-                    />
-                  </div>
-
-                  {/* Player Count */}
-                  <div>
-                    <label
-                      htmlFor="playerCount"
-                      className="block text-sm font-semibold text-gold-light mb-2"
-                    >
-                      Player Count
-                    </label>
-                    <input
-                      type="text"
-                      id="playerCount"
-                      name="playerCount"
-                      value={rpFormData.playerCount}
-                      onChange={handleRpChange}
-                      className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
-                      placeholder="32/64"
-                    />
-                  </div>
-                </div>
-
-                {/* Server IP */}
-                <div>
-                  <label
-                    htmlFor="serverIP"
-                    className="block text-sm font-semibold text-gold-light mb-2"
-                  >
-                    Server IP/Connect Link
-                  </label>
-                  <input
-                    type="text"
-                    id="serverIP"
-                    name="serverIP"
-                    value={rpFormData.serverIP}
-                    onChange={handleRpChange}
-                    className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
-                    placeholder="connect cfx.re/join/abc123"
-                  />
-                </div>
-
-                {/* Server Description */}
-                <div>
-                  <label
-                    htmlFor="serverDescription"
-                    className="block text-sm font-semibold text-gold-light mb-2"
-                  >
-                    Server Description *
-                  </label>
-                  <textarea
-                    id="serverDescription"
-                    name="serverDescription"
-                    value={rpFormData.serverDescription}
-                    onChange={handleRpChange}
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none"
-                    placeholder="Tell us about your server..."
-                  />
-                </div>
-
-                {/* Additional Info */}
-                <div>
-                  <label
-                    htmlFor="additionalInfo"
-                    className="block text-sm font-semibold text-gold-light mb-2"
-                  >
-                    Additional Information
-                  </label>
-                  <textarea
-                    id="additionalInfo"
-                    name="additionalInfo"
-                    value={rpFormData.additionalInfo}
-                    onChange={handleRpChange}
-                    rows={3}
-                    className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all resize-none"
-                    placeholder="Anything else we should know..."
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={isRpSubmitting}
-                  className="w-full px-6 py-4 bg-gradient-gold text-black-deep font-bold text-base rounded-lg hover:shadow-lg hover:shadow-gold/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
-                >
-                  {isRpSubmitting ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-black-deep border-t-transparent rounded-full animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      Submit Partnership Request
-                      <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </button>
-
-                {/* Success Message */}
-                {rpSubmitStatus === "success" && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-300 text-center font-medium"
-                  >
-                    ✓ Request submitted! We'll review and contact you soon.
-                  </motion.div>
-                )}
-
-                {/* Error Message */}
-                {rpSubmitStatus === "error" && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 text-center font-medium"
-                  >
-                    ✕ Failed to submit. Please try again later.
-                  </motion.div>
-                )}
-              </form>
-            </div>
-          </div>
-        </motion.div>
+            </motion.div>
 
             {/* Info Section */}
             <motion.div
@@ -425,24 +426,27 @@ export default function RpInvitePage() {
               transition={{ delay: 0.3 }}
               className="mt-8 bg-gradient-to-br from-gold/5 to-transparent rounded-2xl p-6 border border-gold/20"
             >
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
-              <span className="text-gold text-lg">ℹ️</span>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold text-base mb-2">
-                What happens next?
-              </h4>
-              <ul className="text-gray-400 text-sm space-y-1 leading-relaxed">
-                <li>• Our team will review your server within 24-48 hours</li>
-                <li>
-                  • You'll receive a Discord DM with the partnership details
-                </li>
-                <li>
-                  • Once approved, your server will be featured in our community
-                </li>
-              </ul>
-            </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+                  <span className="text-gold text-lg">ℹ️</span>
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-base mb-2">
+                    What happens next?
+                  </h4>
+                  <ul className="text-gray-400 text-sm space-y-1 leading-relaxed">
+                    <li>
+                      • Our team will review your server within 24-48 hours
+                    </li>
+                    <li>
+                      • You'll receive a Discord DM with the partnership details
+                    </li>
+                    <li>
+                      • Once approved, your server will be featured in our
+                      community
+                    </li>
+                  </ul>
+                </div>
               </div>
             </motion.div>
           </>
