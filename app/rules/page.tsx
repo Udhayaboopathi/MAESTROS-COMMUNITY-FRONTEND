@@ -53,7 +53,7 @@ export default function RulesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="relative w-40 h-40 mx-auto mb-8">
             {/* Outer spinning ring */}

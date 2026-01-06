@@ -51,6 +51,14 @@ export default function Navbar() {
     setIsUserModalOpen(true);
   };
 
+  // Check if path is active (handle root "/" and "/home")
+  const isActiveLink = (href: string) => {
+    if (href === "/") {
+      return pathname === "/" || pathname === "/home";
+    }
+    return pathname === href;
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black-charcoal/95 backdrop-blur-sm border-b border-steel">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,7 +74,7 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center space-x-1 flex-1 justify-center">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href;
+              const isActive = isActiveLink(item.href);
               return (
                 <Link
                   key={item.name}
@@ -293,7 +301,7 @@ export default function Navbar() {
           <div className="px-4 py-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href;
+              const isActive = isActiveLink(item.href);
               return (
                 <Link
                   key={item.name}

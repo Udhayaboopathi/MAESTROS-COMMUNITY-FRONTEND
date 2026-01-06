@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Crown } from "lucide-react";
+import { Crown, Shield, Users } from "lucide-react";
 import { useDiscordStats } from "@/lib/hooks/useDiscordStats";
 import UserDetailsModal from "@/components/modals/UserDetailsModal";
 
@@ -17,7 +17,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="hidden lg:block fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-black-charcoal border-r border-steel overflow-y-auto scrollbar-gold"
+      className="hidden lg:block fixed top-16 left-0 h-[calc(100vh-4rem)] w-[180px] bg-black-charcoal border-r border-steel overflow-y-auto scrollbar-gold"
       style={{ zIndex: 1000000 }}
     >
       <div className="p-4">
@@ -104,7 +104,7 @@ export default function Sidebar() {
                 ).length > 0 && (
                   <div className="mt-3">
                     <div className="flex items-center gap-2 mb-2">
-                      <Crown className="w-3 h-3 text-gold" />
+                      <Shield className="w-3 h-3 text-gold" />
                       <span className="text-xs text-gray-400">
                         Manager Online (
                         {
@@ -144,9 +144,12 @@ export default function Sidebar() {
               {/* Community Members Online */}
               {stats?.members && stats.members.length > 0 && (
                 <div className="mt-3">
-                  <span className="text-xs text-gray-400">
-                    Community Members Online ({stats.members.length})
-                  </span>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="w-3 h-3 text-gold" />
+                    <span className="text-xs text-gray-400">
+                      Members Online ({stats.members.length})
+                    </span>
+                  </div>
                   <div className="max-h-48 lg:max-h-24 overflow-y-auto scrollbar-gold space-y-1 mt-2">
                     {stats.members
                       .slice(0, 10)

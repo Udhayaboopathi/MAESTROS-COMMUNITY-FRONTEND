@@ -183,7 +183,7 @@ export default function GamesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-black-deep to-black-charcoal">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         <div className="mb-4 sm:mb-6 backdrop-blur-sm bg-black-charcoal/50 rounded-2xl p-4 sm:p-6 border border-gold/20 shadow-lg shadow-gold/5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

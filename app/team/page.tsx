@@ -260,7 +260,7 @@ export default function TeamPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="relative w-40 h-40 mx-auto mb-8">
             {/* Outer spinning ring */}
@@ -314,7 +314,7 @@ export default function TeamPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-500 mb-4">Error: {error}</p>
           <button
@@ -351,7 +351,7 @@ export default function TeamPage() {
   const onlineMemberCount = regularMembers.filter((m) => m.is_online).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal p-6 sm:p-8 lg:p-12">
+    <div className="min-h-screen p-6 sm:p-8 lg:p-12">
       {/* Member Details Modal */}
       <UserDetailsModal
         isOpen={isModalOpen}
@@ -492,7 +492,9 @@ export default function TeamPage() {
                 className="inline-flex items-center gap-2 px-4 py-2 bg-gold/10 border border-gold/30 rounded-full mb-6"
               >
                 <Users className="w-4 h-4 text-gold" />
-                <span className="text-sm text-gold font-semibold">Our Team</span>
+                <span className="text-sm text-gold font-semibold">
+                  Our Team
+                </span>
               </motion.div>
             </div>
 

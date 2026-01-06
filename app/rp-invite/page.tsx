@@ -80,7 +80,7 @@ export default function RpInvitePage() {
   };
 
   return (
-    <div className="min-h-screen bg-black-deep relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/10 rounded-full blur-3xl animate-pulse" />

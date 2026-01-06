@@ -28,7 +28,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black-charcoal via-black-deep to-black-charcoal flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <LoadingScreen message="Loading Dashboard..." fullScreen={false} />
       </div>
     );

@@ -67,9 +67,50 @@ export default function RootLayout({
       >
         <Providers>
           <Navbar />
-          <div className="flex min-h-screen bg-black-deep pt-16">
+          <div className="flex min-h-screen bg-black-deep pt-16 relative">
+            {/* Animated Background */}
+            <div
+              className="fixed inset-0 pointer-events-none overflow-hidden"
+              style={{ zIndex: 1 }}
+            >
+              {/* Gradient Orbs */}
+              <div className="absolute top-1/4 -left-48 w-96 h-96 bg-gold/10 rounded-full blur-3xl animate-pulse" />
+              <div
+                className="absolute bottom-1/4 -right-48 w-96 h-96 bg-gold-light/10 rounded-full blur-3xl animate-pulse"
+                style={{ animationDelay: "1s" }}
+              />
+              <div
+                className="absolute top-3/4 left-1/3 w-64 h-64 bg-gold/5 rounded-full blur-3xl animate-pulse"
+                style={{ animationDelay: "2s" }}
+              />
+
+              {/* Animated Grid */}
+              <div className="absolute inset-0 opacity-5">
+                <div
+                  className="w-full h-full animate-grid-flow"
+                  style={{
+                    backgroundImage: `linear-gradient(rgba(212, 175, 55, 0.3) 1px, transparent 1px),
+                                     linear-gradient(90deg, rgba(212, 175, 55, 0.3) 1px, transparent 1px)`,
+                    backgroundSize: "50px 50px",
+                  }}
+                />
+              </div>
+
+              {/* Logo Watermark */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.05] pointer-events-none">
+                <img
+                  src="/logo.png"
+                  alt="Maestros Logo"
+                  className="w-[800px] h-[800px] object-contain animate-pulse"
+                  style={{ animationDuration: "8s" }}
+                />
+              </div>
+            </div>
+
             <Sidebar />
-            <main className="flex-1 lg:ml-64">{children}</main>
+            <main className="flex-1 lg:ml-[180px] relative z-10">
+              {children}
+            </main>
           </div>
           <Toaster
             position="top-right"

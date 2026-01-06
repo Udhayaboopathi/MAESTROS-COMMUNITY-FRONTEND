@@ -72,7 +72,26 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black-deep relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background Image Layer */}
+      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: -1 }}>
+        {/* Logo Watermark Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundImage: `url('/logo.png')`,
+              backgroundSize: "800px 800px",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          />
+        </div>
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-black-deep to-black opacity-80" />
+      </div>
+
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/10 rounded-full blur-3xl animate-pulse" />

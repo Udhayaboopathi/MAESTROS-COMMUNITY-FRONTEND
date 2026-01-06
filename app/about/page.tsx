@@ -102,7 +102,7 @@ export default function AboutPage() {
           className="mb-12 md:mb-20"
         >
           <div className="card-gold max-w-4xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gold mb-4 md:mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gold mb-4 md:mb-6 text-center">
               Our Story
             </h2>
             <div className="space-y-3 md:space-y-4 text-sm sm:text-base text-gray-300">
