@@ -10,9 +10,6 @@ interface UserDetails {
   discord_id?: string;
   avatar?: string;
   email?: string;
-  level?: number;
-  xp?: number;
-  badges?: string[];
   guild_roles?: string[];
   role_colors?: Array<{ name: string; color: string }>;
   highest_role?: {

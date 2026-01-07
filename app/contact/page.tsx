@@ -47,29 +47,29 @@ export default function ContactPage() {
     }));
   };
 
-  const contactMethods = [
-    {
-      icon: Mail,
-      title: "Email",
-      value: "contact@maestros.gg",
-      description: "Send us an email anytime",
-      link: "mailto:contact@maestros.gg",
-    },
-    {
-      icon: MessageSquare,
-      title: "Discord",
-      value: "Join our server",
-      description: "Chat with us on Discord",
-      link: "https://discord.gg/maestros",
-    },
-    {
-      icon: Globe,
-      title: "Social Media",
-      value: "@MaestrosCommunity",
-      description: "Follow us on social platforms",
-      link: "#",
-    },
-  ];
+  // const contactMethods = [
+  //   {
+  //     icon: Mail,
+  //     title: "Email",
+  //     value: "contact@maestros.gg",
+  //     description: "Send us an email anytime",
+  //     link: "mailto:contact@maestros.gg",
+  //   },
+  //   {
+  //     icon: MessageSquare,
+  //     title: "Discord",
+  //     value: "Join our server",
+  //     description: "Chat with us on Discord",
+  //     link: "https://discord.gg/pG83VJECT3",
+  //   },
+  //   {
+  //     icon: Globe,
+  //     title: "Social Media",
+  //     value: "@MaestrosCommunity",
+  //     description: "Follow us on social platforms",
+  //     link: "#",
+  //   },
+  // ];
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -126,7 +126,7 @@ export default function ContactPage() {
         </motion.div>
 
         {/* Contact Methods - Horizontal Cards */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -159,7 +159,7 @@ export default function ContactPage() {
               </motion.a>
             );
           })}
-        </motion.div>
+        </motion.div> */}
 
         {/* Contact Form */}
         <div className="grid lg:grid-cols-5 gap-8 items-start mb-12">
@@ -378,26 +378,6 @@ export default function ContactPage() {
                 </div>
               </div>
             </div>
-
-            {/* RP Server Partnership Link */}
-            <a
-              href="/rp-invite"
-              className="block bg-gradient-to-r from-gold/10 via-gold-light/5 to-transparent rounded-2xl p-6 border border-gold/30 hover:border-gold/50 transition-all group"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-gold flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Gamepad2 className="w-6 h-6 text-black-deep" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-white font-bold text-base mb-1 group-hover:text-gold transition-colors">
-                    RP Server Partnership
-                  </h4>
-                  <p className="text-gray-400 text-xs">
-                    Get your server featured in our community →
-                  </p>
-                </div>
-              </div>
-            </a>
           </motion.div>
         </div>
       </div>

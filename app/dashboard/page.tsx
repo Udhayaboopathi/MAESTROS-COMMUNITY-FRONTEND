@@ -6,12 +6,24 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import UserDetailsModal from "@/components/modals/UserDetailsModal";
 import LoadingScreen from "@/components/common/LoadingScreen";
-import { Crown, Shield, ShieldCheck } from "lucide-react";
+import {
+  Crown,
+  Shield,
+  ShieldCheck,
+  Activity,
+  Headphones,
+  Clock,
+} from "lucide-react";
+import api from "@/lib/api";
 
 export default function Dashboard() {
   const { user, isLoading, refreshUser } = useAuth();
   const router = useRouter();
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [botActivity, setBotActivity] = useState<string>("Maestros Community");
+  const [isBotOnline, setIsBotOnline] = useState<boolean>(false);
+  const [activityStartTime, setActivityStartTime] = useState<Date>(new Date());
+  const [elapsedTime, setElapsedTime] = useState<string>("00:00");
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -24,6 +36,40 @@ export default function Dashboard() {
     if (user) {
       refreshUser();
     }
+  }, []);
+
+  // Fetch bot activity and rotate it
+  useEffect(() => {
+    const activities = ["Maestros Community", "@I AM GROOT"];
+    let activityIndex = 0;
+
+    // Check bot status
+    const checkBotStatus = async () => {
+      try {
+        const response = await api.get("/discord/status");
+        setIsBotOnline(response.data.online);
+      } catch (error) {
+        console.error("Failed to fetch bot status:", error);
+        setIsBotOnline(false);
+      }
+    };
+
+    // Initial check
+    checkBotStatus();
+
+    // Rotate activity every 5 seconds (matching bot's rotation)
+    const activityInterval = setInterval(() => {
+      activityIndex = (activityIndex + 1) % activities.length;
+      setBotActivity(activities[activityIndex]);
+    }, 5000);
+
+    // Check bot status every 30 seconds
+    const statusInterval = setInterval(checkBotStatus, 30000);
+
+    return () => {
+      clearInterval(activityInterval);
+      clearInterval(statusInterval);
+    };
   }, []);
 
   if (isLoading) {
@@ -71,7 +117,7 @@ export default function Dashboard() {
                 {user.display_name || user.username}
               </button>
               <p className="text-sm sm:text-base text-gray-400">
-                Level {user.level} • {user.xp} XP
+                @{user.username}#{user.discriminator}
               </p>
               {permissions.is_ceo && (
                 <div className="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-gradient-gold/10 border border-gold/30 rounded-lg">
@@ -102,22 +148,46 @@ export default function Dashboard() {
         {/* Quick Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
           <div className="bg-black-charcoal border border-steel rounded-lg p-4 sm:p-6">
-            <h3 className="text-gray-400 text-xs sm:text-sm mb-2">Level</h3>
+            <h3 className="text-gray-400 text-xs sm:text-sm mb-2">
+              Member Since
+            </h3>
             <p className="text-2xl sm:text-3xl font-bold text-gold-light">
-              {user.level}
+              {new Date(user.joined_at).toLocaleDateString()}
             </p>
           </div>
           <div className="bg-black-charcoal border border-steel rounded-lg p-4 sm:p-6">
-            <h3 className="text-gray-400 text-xs sm:text-sm mb-2">Total XP</h3>
+            <h3 className="text-gray-400 text-xs sm:text-sm mb-2">Roles</h3>
             <p className="text-2xl sm:text-3xl font-bold text-gold-light">
-              {user.xp}
+              {user.guild_roles?.length || 0}
             </p>
           </div>
           <div className="bg-black-charcoal border border-steel rounded-lg p-4 sm:p-6">
-            <h3 className="text-gray-400 text-xs sm:text-sm mb-2">Badges</h3>
-            <p className="text-2xl sm:text-3xl font-bold text-gold-light">
-              {user.badges?.length || 0}
-            </p>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-gray-400 text-xs sm:text-sm">Bot Status</h3>
+              <div className="flex items-center gap-2">
+                {isBotOnline ? (
+                  <>
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-xs text-green-500 font-semibold">
+                      ONLINE
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-2 h-2 rounded-full bg-red-500" />
+                    <span className="text-xs text-red-500 font-semibold">
+                      OFFLINE
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 mt-3">
+              <Activity className="w-5 h-5 text-gold-light" />
+              <p className="text-sm font-medium text-white truncate">
+                {botActivity}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -340,7 +410,7 @@ export default function Dashboard() {
         )}
 
         {/* Quick Actions */}
-        <div className="bg-black-charcoal border border-steel rounded-lg p-6">
+        {/* <div className="bg-black-charcoal border border-steel rounded-lg p-6">
           <h3 className="text-xl font-bold text-gold-light mb-4">
             Quick Actions
           </h3>
@@ -382,7 +452,7 @@ export default function Dashboard() {
               </p>
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <UserDetailsModal

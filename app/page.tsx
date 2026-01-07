@@ -14,7 +14,7 @@ function AuthHandler() {
 
     if (token) {
       // Store token
-      localStorage.setItem("auth_token", token);
+      sessionStorage.setItem("auth_token", token);
       console.log("✅ Token saved, redirecting to home...");
       // Force full page reload to trigger AuthContext refresh
       window.location.href = "/home";

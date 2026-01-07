@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/contexts/AuthContext";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
 import { CheckCircle, ArrowRight, ArrowLeft, FileText } from "lucide-react";
+import { title } from "process";
 
 const steps = [
   {
@@ -49,18 +50,6 @@ const steps = [
         type: "number",
         required: true,
       },
-      {
-        name: "rank",
-        label: "Current Rank/Level",
-        type: "text",
-        required: true,
-      },
-      {
-        name: "experience",
-        label: "Gaming Experience (describe your skills)",
-        type: "textarea",
-        required: true,
-      },
     ],
   },
   {
@@ -73,12 +62,6 @@ const steps = [
         required: true,
       },
       {
-        name: "contribution",
-        label: "What can you contribute to the community?",
-        type: "textarea",
-        required: true,
-      },
-      {
         name: "availability",
         label: "How many hours per week can you participate?",
         type: "number",
@@ -86,11 +69,31 @@ const steps = [
       },
     ],
   },
+
+  {
+    title: "Social Media Links",
+    fields: [
+      {
+        name: "Instagram",
+        label: "Instagram link",
+        type: "text",
+        required: false,
+        placeholder: "https://instagram.com/yourprofile",
+      },
+      {
+        name: "YouTube",
+        label: "YouTube Channel",
+        type: "text",
+        required: false,
+        placeholder: "https://youtube.com/yourchannel",
+      },
+    ],
+  },
 ];
 
 export default function ApplyPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -218,8 +221,8 @@ export default function ApplyPage() {
           <p className="text-gray-300 mb-6">
             You need to be logged in to submit an application.
           </p>
-          <button onClick={() => router.push("/")} className="btn-gold">
-            Go to Home
+          <button onClick={login} className="btn-gold">
+            Login with Discord
           </button>
         </motion.div>
       </div>

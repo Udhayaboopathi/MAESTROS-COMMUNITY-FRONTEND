@@ -332,8 +332,7 @@ export default function ApplicationsPage() {
                           {app.in_game_name || app.user_info?.username}
                         </h3>
                         <p className="text-sm text-gray-400">
-                          {app.user_info?.username} • Level{" "}
-                          {app.user_info?.level || 1}
+                          {app.user_info?.username}
                         </p>
                       </div>
                     </div>

@@ -21,9 +21,6 @@ interface TeamMember {
   username: string;
   display_name?: string;
   avatar?: string;
-  level?: number;
-  xp?: number;
-  badges?: string[];
   guild_roles?: string[];
   joined_at?: string;
   last_login?: string;
@@ -129,30 +126,6 @@ const MemberCard = ({
             </h3>
             <p className="text-sm text-gold/60 font-medium">{role}</p>
           </div>
-
-          {/* Level badge */}
-          {member.level !== undefined && (
-            <div className="flex items-center gap-2 bg-black-deep/50 px-4 py-2 rounded-full border border-gold/20">
-              <span className="text-xs text-gold/60">Level</span>
-              <span className="text-sm font-bold text-gold">
-                {member.level}
-              </span>
-            </div>
-          )}
-
-          {/* Badges */}
-          {member.badges && member.badges.length > 0 && (
-            <div className="flex flex-wrap gap-1 justify-center">
-              {member.badges.slice(0, 3).map((badge, i) => (
-                <span
-                  key={i}
-                  className="px-2 py-1 text-xs bg-gold/10 text-gold rounded-full border border-gold/20"
-                >
-                  {badge}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </motion.div>
@@ -186,9 +159,6 @@ export default function TeamPage() {
             username: member.username || member.display_name,
             display_name: member.display_name,
             avatar: member.avatar,
-            level: member.level || 1,
-            xp: member.xp || 0,
-            badges: member.badges || [],
             guild_roles: member.guild_roles || [],
             joined_at: member.joined_at,
             last_login: member.last_login,

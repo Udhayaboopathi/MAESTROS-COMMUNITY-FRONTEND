@@ -46,27 +46,3 @@ export function timeAgo(date: string | Date): string {
 
   return "just now";
 }
-
-export function calculateLevel(xp: number): number {
-  // Level = sqrt(XP / 100)
-  return Math.floor(Math.sqrt(xp / 100));
-}
-
-export function xpForLevel(level: number): number {
-  // XP needed = (level^2) * 100
-  return Math.pow(level, 2) * 100;
-}
-
-export function xpForNextLevel(currentXp: number): number {
-  const currentLevel = calculateLevel(currentXp);
-  return xpForLevel(currentLevel + 1) - currentXp;
-}
-
-export function levelProgress(xp: number): number {
-  const currentLevel = calculateLevel(xp);
-  const currentLevelXp = xpForLevel(currentLevel);
-  const nextLevelXp = xpForLevel(currentLevel + 1);
-  const progress =
-    ((xp - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100;
-  return Math.min(Math.max(progress, 0), 100);
-}

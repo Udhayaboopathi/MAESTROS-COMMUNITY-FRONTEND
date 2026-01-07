@@ -18,6 +18,7 @@ import {
   User,
   Crown,
   Shield,
+  Send,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { useDiscordStats } from "@/lib/hooks/useDiscordStats";
@@ -42,7 +43,7 @@ export default function Navbar() {
     { name: "Games", href: "/games", icon: Gamepad2 },
     { name: "Rules", href: "/rules", icon: Shield },
     { name: "Team", href: "/team", icon: Users },
-    { name: "Server Invitation", href: "/rp-invite", icon: Gamepad2 },
+    { name: "Server Invitation", href: "/rp-invite", icon: Send },
     { name: "Contact", href: "/contact", icon: Mail },
   ];
 

@@ -38,29 +38,29 @@ const values = [
 
 const achievements = [
   {
-    year: "2020",
+    year: "2024",
     title: "Community Founded",
     description: "Started with 50 passionate gamers",
   },
   {
-    year: "2021",
-    title: "First Tournament",
-    description: "Hosted our first major esports event",
-  },
-  {
-    year: "2022",
-    title: "1000 Members",
-    description: "Reached 1000 active community members",
-  },
-  {
-    year: "2023",
-    title: "Regional Champions",
-    description: "Won multiple regional championships",
-  },
-  {
     year: "2024",
-    title: "Going Global",
-    description: "Expanded to international competitions",
+    title: "SAMP Community",
+    description: "One of the Biggest and Active SAMP Community in TamilNadu",
+  },
+  {
+    year: "2025",
+    title: "Entering Other Games",
+    description: "Valorant, CSGO, PUBG and More",
+  },
+  {
+    year: "2025",
+    title: "GTA RP Community",
+    description: "Entered into GTA RP",
+  },
+  {
+    year: "2026",
+    title: "Still Growing",
+    description: "Planing to our new journey on Gaming",
   },
 ];
 

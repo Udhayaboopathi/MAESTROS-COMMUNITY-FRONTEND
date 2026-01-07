@@ -15,7 +15,6 @@ export default function RpInvitePage() {
     discordId: "",
     serverDescription: "",
     playerCount: "",
-    serverIP: "",
     additionalInfo: "",
   });
   const [isRpSubmitting, setIsRpSubmitting] = useState(false);
@@ -41,7 +40,6 @@ export default function RpInvitePage() {
             discord_id: rpFormData.discordId,
             server_description: rpFormData.serverDescription,
             player_count: rpFormData.playerCount,
-            server_ip: rpFormData.serverIP,
             additional_info: rpFormData.additionalInfo,
           }),
         }
@@ -56,7 +54,6 @@ export default function RpInvitePage() {
           discordId: "",
           serverDescription: "",
           playerCount: "",
-          serverIP: "",
           additionalInfo: "",
         });
         setTimeout(() => setRpSubmitStatus("idle"), 5000);
@@ -292,7 +289,7 @@ export default function RpInvitePage() {
                           value={rpFormData.discordId}
                           onChange={handleRpChange}
                           className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
-                          placeholder="https://discord.gg/your-invite"
+                          placeholder="https://discord.gg/pG83VJECT3"
                         />
                       </div>
 
@@ -314,25 +311,6 @@ export default function RpInvitePage() {
                           placeholder="32/64"
                         />
                       </div>
-                    </div>
-
-                    {/* Server IP */}
-                    <div>
-                      <label
-                        htmlFor="serverIP"
-                        className="block text-sm font-semibold text-gold-light mb-2"
-                      >
-                        Server IP/Connect Link
-                      </label>
-                      <input
-                        type="text"
-                        id="serverIP"
-                        name="serverIP"
-                        value={rpFormData.serverIP}
-                        onChange={handleRpChange}
-                        className="w-full px-4 py-3 bg-black-deep/80 border border-gold/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-all"
-                        placeholder="connect cfx.re/join/abc123"
-                      />
                     </div>
 
                     {/* Server Description */}
