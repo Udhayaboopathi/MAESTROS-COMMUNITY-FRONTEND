@@ -1,7 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ArrowRight, Crown, Award, Check } from "lucide-react";
 import Link from "next/link";
@@ -14,27 +13,6 @@ const benefits = [
   "Community recognition",
   "Direct support channel",
 ];
-
-function AuthHandler() {
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const token = searchParams.get("token");
-    const error = searchParams.get("error");
-
-    if (token) {
-      localStorage.setItem("auth_token", token);
-      window.history.replaceState({}, "", "/");
-      window.location.reload();
-    } else if (error) {
-      console.error("Authentication error:", error);
-      alert(`Login failed: ${error}`);
-      window.history.replaceState({}, "", "/");
-    }
-  }, [searchParams]);
-
-  return null;
-}
 
 export default function Home() {
   const [showWelcome, setShowWelcome] = useState(false);
@@ -353,10 +331,6 @@ export default function Home() {
 
       {!showWelcome && (
         <>
-          <Suspense fallback={null}>
-            <AuthHandler />
-          </Suspense>
-
           {/* Hero Section */}
           <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0 overflow-hidden">
@@ -490,7 +464,6 @@ export default function Home() {
               </div>
             </motion.div>
           </section>
-
           {/* Join CTA Section */}
           <section className="py-20 px-4 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br  via-transparent to-gold/5" />
