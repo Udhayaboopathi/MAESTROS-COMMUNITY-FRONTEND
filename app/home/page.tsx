@@ -5,21 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ArrowRight, Crown, Award, Check } from "lucide-react";
 import Link from "next/link";
-import api from "@/lib/api";
-
-interface Player {
-  discord_id: string;
-  name: string;
-  role: string;
-  avatar: string | null;
-  level: number;
-  xp: number;
-  badges: string[];
-  stats: {
-    wins: number;
-    kd: number;
-  };
-}
 
 const benefits = [
   "Access to exclusive tournaments",
@@ -53,9 +38,6 @@ function AuthHandler() {
 
 export default function Home() {
   const [showWelcome, setShowWelcome] = useState(false);
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [loadingPlayers, setLoadingPlayers] = useState(true);
-  const [playersError, setPlayersError] = useState<string | null>(null);
 
   useEffect(() => {
     const hasSeenWelcome = sessionStorage.getItem("hasSeenWelcome");
@@ -75,26 +57,6 @@ export default function Home() {
       return () => clearTimeout(timer);
     }
   }, [showWelcome]);
-
-  useEffect(() => {
-    const fetchFeaturedCEOs = async () => {
-      try {
-        const response = await api.get("/users/featured/ceos");
-        const playersData = Array.isArray(response.data)
-          ? response.data
-          : response.data?.users || response.data?.data || [];
-
-        setPlayers(playersData);
-      } catch (err) {
-        console.error("Failed to fetch featured CEOs:", err);
-        setPlayersError("Failed to load featured players");
-      } finally {
-        setLoadingPlayers(false);
-      }
-    };
-
-    fetchFeaturedCEOs();
-  }, []);
 
   return (
     <div className="min-h-screen">
