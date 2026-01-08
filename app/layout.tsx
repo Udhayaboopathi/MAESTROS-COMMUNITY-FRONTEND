@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     siteName: "Maestros",
     images: [
       {
-        url: "/og-image.png",
+        url: "/images/og/og-image.png",
         width: 1200,
         height: 630,
         alt: "Maestros Community",
@@ -43,15 +43,23 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Maestros Community",
     description: "Elite Gaming Community",
-    images: ["/og-image.png"],
+    images: ["/images/og/og-image.png"],
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      {
+        url: "/images/logo/favicon-96x96.png",
+        sizes: "96x96",
+        type: "image/png",
+      },
+    ],
+    apple: "/images/logo/apple-touch-icon.png",
+  },
+  manifest: "/images/logo/site.webmanifest",
   robots: {
     index: true,
     follow: true,
-  },
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
   },
 };
 
@@ -66,8 +74,11 @@ export default function RootLayout({
         className={`${playfair.variable} ${inter.variable} font-serif antialiased`}
       >
         <Providers>
+          {/* Unified Borders */}
+          <div className="hidden lg:block fixed top-[64px] left-[180px] w-px h-[calc(100vh-64px)] bg-steel z-30" />
+          <div className="fixed top-[64px] lg:left-[180px] left-0 right-0 h-px bg-steel z-30" />
           <Navbar />
-          <div className="flex min-h-screen bg-black-deep pt-16 relative">
+          <div className="flex min-h-screen bg-black-deep relative">
             {/* Animated Background */}
             <div
               className="fixed inset-0 pointer-events-none overflow-hidden"
@@ -108,7 +119,7 @@ export default function RootLayout({
             </div>
 
             <Sidebar />
-            <main className="flex-1 lg:ml-[180px] relative z-10">
+            <main className="flex-1 lg:ml-[180px] pt-16 relative z-10">
               {children}
             </main>
           </div>

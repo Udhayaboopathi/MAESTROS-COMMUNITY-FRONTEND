@@ -16,11 +16,8 @@ export default function Sidebar() {
   };
 
   return (
-    <aside
-      className="hidden lg:block fixed top-16 left-0 h-[calc(100vh-4rem)] w-[180px] bg-black-charcoal border-r border-steel overflow-y-auto scrollbar-gold"
-      style={{ zIndex: 1000000 }}
-    >
-      <div className="p-4">
+    <aside className="hidden lg:block fixed top-0 left-0 h-screen w-[180px] bg-black-charcoal overflow-y-auto scrollbar-gold z-30">
+      <div className="p-4 pt-4">
         {/* Logo */}
         <div className="mb-6 flex justify-center">
           <img

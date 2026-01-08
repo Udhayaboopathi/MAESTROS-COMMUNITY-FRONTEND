@@ -1,0 +1,35 @@
+<!-- Maestros Logo - SVG Template -->
+<!-- Save this as: /public/images/logo/maestros-icon.svg -->
+<!-- You can also use https://vectorizer.com to convert your PNG to SVG -->
+
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Maestros Community</title>
+  <!-- 
+    This is a placeholder SVG. 
+    To create the actual SVG:
+    1. Go to https://vectorizer.com
+    2. Upload your maestros-logo-small.png
+    3. Download the SVG
+    4. Replace this file content with the generated SVG
+  -->
+  
+  <!-- Placeholder: Shield outline -->
+  <path d="M256 50L100 150v150c0 100 50 150 156 200 106-50 156-100 156-200V150L256 50z" 
+        fill="#0a0a0a" 
+        stroke="#e6b325" 
+        stroke-width="4"/>
+  
+  <!-- Placeholder: Eagle silhouette suggestion -->
+  <circle cx="256" cy="256" r="100" fill="#e6b325" opacity="0.3"/>
+  
+  <!-- Add text as fallback -->
+  <text x="256" y="256" 
+        font-family="Arial, sans-serif" 
+        font-size="80" 
+        font-weight="bold" 
+        fill="#e6b325" 
+        text-anchor="middle" 
+        dominant-baseline="middle">
+    M
+  </text>
+</svg>

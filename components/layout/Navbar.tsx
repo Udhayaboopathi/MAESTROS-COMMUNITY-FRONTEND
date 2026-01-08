@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import OptimizedImage from "@/components/common/OptimizedImage";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Home,
@@ -61,13 +62,17 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black-charcoal/95 backdrop-blur-sm border-b border-steel">
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="text-xl lg:text-2xl font-bold bg-gradient-gold bg-clip-text text-transparent whitespace-nowrap">
-              MAESTROS COMMUNITY
+    <nav className="fixed top-0 left-0 lg:left-[180px] right-0 z-50 bg-black-charcoal/95 backdrop-blur-sm">
+      <div className="flex items-center h-16">
+        {/* Main Navbar Content */}
+        <div className="flex items-center justify-between flex-1 px-4 sm:px-6 lg:px-8 gap-4">
+          {/* Mobile Logo */}
+          <Link
+            href="/"
+            className="flex lg:hidden items-center gap-3 flex-shrink-0"
+          >
+            <div className="text-xl font-bold bg-gradient-gold bg-clip-text text-transparent whitespace-nowrap">
+              MAESTROS
             </div>
           </Link>
 
@@ -146,13 +151,6 @@ export default function Navbar() {
         <div className="lg:hidden border-t border-steel bg-black-charcoal max-h-[calc(100vh-4rem)] overflow-y-auto">
           {/* Discord Stats Section */}
           <div className="px-4 py-4 border-b border-steel">
-            <div className="flex justify-center mb-4">
-              <img
-                src="/logo.png"
-                alt="Maestros Logo"
-                className="w-24 h-24 object-contain"
-              />
-            </div>
             <h3 className="text-xs uppercase tracking-wider text-gray-400 mb-3">
               Discord Live
             </h3>
